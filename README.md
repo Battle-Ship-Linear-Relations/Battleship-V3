@@ -1,6 +1,6 @@
 # Battleship-V3
 
-Instructions
+<ins>Instructions</ins>
 
 - You will be asked to choose a difficulty
  - 1 -> coordinate version
@@ -13,18 +13,18 @@ Instructions
 - If a ship has sunk on either side, it will indicate at the bottom of the screen
 - Once a player has sunk all the other player’s ships, they win the game!
 
-#Difficulty 1
+<ins>Difficulty 1</ins>
 
 - This is the coordinates version of the game and is the easiest
 - Once you place all your ships and the computer places all of its ships, you will be asked to input a coordinate to guess the other player's ship
 
-#Difficulty 2
+<ins>Difficulty 2</ins>
 
 - This is the slope version of the game, and is intermediate
 - You will input an equation for the slope in the form y = mx + b
 - lines must directly intersect a ship to be considered a hit
 
-#Difficulty 3
+<ins>Difficulty 3</ins>
 
 - This is the inequality version of the game, this is the most advanced version of the game
 - You will input an equation for the slope but you will also have the option to make it an inequality
