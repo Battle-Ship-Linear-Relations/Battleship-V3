@@ -3,9 +3,9 @@
 <ins>Instructions</ins>
 
 - You will be asked to choose a difficulty
- - 1 -> coordinate version
- - 2 -> slope version
- - 3 -> inequality version
+   - 1 -> coordinate version
+   - 2 -> slope version
+   - 3 -> inequality version
 - First, you must place your ships on your own board, ships can be rotated by pressing ‘r’
 - Then, the computer will place its ships on its board, you will not be able to see the computer’s ships
 - You will then input a value depending on the difficulty
