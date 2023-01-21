@@ -17,11 +17,14 @@
 
 - This is the coordinates version of the game and is the easiest
 - Once you place all your ships and the computer places all of its ships, you will be asked to input a coordinate to guess the other player's ship
+- the program will not allow you to play repeated coordinates 
 
 <ins>Difficulty 2</ins>
 
 - This is the slope version of the game, and is intermediate
 - You will input an equation for the slope in the form y = mx + b
+- the program will not allow you to input slopes that are flat lines or undefined slopes
+- the program will not allow you play repeated slopes
 - lines must directly intersect a ship to be considered a hit
 
 <ins>Difficulty 3</ins>
@@ -30,3 +33,4 @@
 - You will input an equation for the slope but you will also have the option to make it an inequality
 - Inequalities will show up on the board as pink highlighted squares for a brief moment 
 - The program will tell you how many ships are within the inputted range
+- the program will not allow you to play repeated inequalities 
