@@ -25,7 +25,7 @@ public class gameFrame extends JFrame{ //extends JFrame so this class can just b
     JLabel grid = new JLabel(gridImage);
     JLabel grid2 = new JLabel(gridImage);
     JLabel turnJLabel = new JLabel("Your Turn");
-    JLabel instructionLabel = new JLabel("Press 'r' to rotate");
+    JLabel rotateLabel = new JLabel("Press 'r' to rotate");
     JLabel coordinateLabel = new JLabel("Coordinate:");
     JLabel computerBoard = new JLabel("Computer's baord:");
     JLabel userBoard = new JLabel("Your board:");
@@ -138,11 +138,11 @@ public class gameFrame extends JFrame{ //extends JFrame so this class can just b
                 errorLabel.setVisible(false);
                 add(errorLabel);
 
-                instructionLabel.setFont(new Font("Verdana", Font.BOLD, 30)); // instructions displaying you can rotate the ships with 'r'
-                instructionLabel.setBounds(620, 100, 400, 40);
-                instructionLabel.setForeground(Color.BLACK);
-                instructionLabel.setVisible(false);
-                add(instructionLabel);
+                rotateLabel.setFont(new Font("Verdana", Font.BOLD, 30)); // instructions displaying you can rotate the ships with 'r'
+                rotateLabel.setBounds(620, 100, 400, 40);
+                rotateLabel.setForeground(Color.BLACK);
+                rotateLabel.setVisible(false);
+                add(rotateLabel);
 
                 difficultyLabel.setFont(new Font("Verdana", Font.BOLD, 30)); // label asking the user what difficulty they want
                 difficultyLabel.setBounds(630, 250, 300, 150);
@@ -395,7 +395,7 @@ public class gameFrame extends JFrame{ //extends JFrame so this class can just b
         level2Button.setVisible(false);
         level3Button.setVisible(false);
         turnJLabel.setVisible(true);
-        instructionLabel.setVisible(true);
+        rotateLabel.setVisible(true);
         shipType.setVisible(true);
         this.addKeyListener(new KeyAdapter() { // add a key listener
             @Override
@@ -737,7 +737,7 @@ public class gameFrame extends JFrame{ //extends JFrame so this class can just b
                     repaint();
                     playerTurn++;
                     turnJLabel.setText("<html>Computer's<br/>Turn</html>"); // once the user has placed all of their ships, indicate its the coputer's turn and allow the bot to play its ship
-                    instructionLabel.setVisible(false);
+                    rotateLabel.setVisible(false);
                     botPlaceShips(); // tell the computer to place its ships
                 }
             }
