@@ -107,6 +107,8 @@ public class gameFrame extends JFrame{ //extends JFrame so this class can just b
                 resetButton.setFont(new Font("Verdana", Font.BOLD, 25)); // button to play again after someone has won the game
                 resetButton.setBounds(655, 570, 200, 75);
                 resetButton.setForeground(Color.BLACK);
+                resetButton.setFocusable(false);
+                resetButton.setBackground(Color.WHITE);
                 resetButton.setVisible(false);
                 resetButton.addActionListener(f -> playAgain()); // if reset button is pressed
                 add(resetButton);
@@ -381,7 +383,10 @@ public class gameFrame extends JFrame{ //extends JFrame so this class can just b
 
     }
 
-
+    /**
+     * initailize the functions of the game and display the needed buttons/textfeild depending on the difficulty
+     * @return void
+     */
     public void startGame(int level) {
         setFocusable(true);
         difficulty = level;
@@ -413,7 +418,7 @@ public class gameFrame extends JFrame{ //extends JFrame so this class can just b
         for (int i = 0; i < play.length; i++) {
             for (int j = 0; j < play.length; j++) {
                 buttonPressed(i, j); // initialize what happes to the buttons over hover and when pressed
-                buttonSet(i, j);
+                buttonHover(i, j);
             }
         }
 
@@ -458,7 +463,7 @@ public class gameFrame extends JFrame{ //extends JFrame so this class can just b
      * @param int yCoord, the y value of the button
      * @return void
      */
-    public void buttonSet(int xCoord, int yCoord) {
+    public void buttonHover(int xCoord, int yCoord) {
         
         play[xCoord][yCoord].addMouseListener(new java.awt.event.MouseAdapter() {
             /**
@@ -625,7 +630,7 @@ public class gameFrame extends JFrame{ //extends JFrame so this class can just b
      * @param int yCoord, the y value of the button
      * @return void
      */
-    public void buttonPressed2(int xCoord, int yCoord) { // if the robot is confirming its ships
+    public void computerButtonPressed(int xCoord, int yCoord) { // if the robot is confirming its ships
                     
         if (shipCount == 3) {
             if (ShipLength.shipLength4(play2, rotate, player, xCoord, yCoord)) {
@@ -726,7 +731,7 @@ public class gameFrame extends JFrame{ //extends JFrame so this class can just b
                 if (shipCount <= 3) shipType.setText("Ship: " + ships[shipCount]); // display the type of ship being placed based on length
 
                 if (shipCount == 3) {
-                    player = Color.lightGray; // when shipCount is equal to 3 (the user has placed all thier ships), set player to Colour Blue
+                    player = Color.BLUE; // when shipCount is equal to 3 (the user has placed all thier ships), set player to Colour Blue
                 }
                 if (shipCount == 3) {
                     repaint();
@@ -751,7 +756,7 @@ public class gameFrame extends JFrame{ //extends JFrame so this class can just b
                 rotate += (int)Math.floor(Math.random()*(10));
                 int xCoord = (int)Math.floor(Math.random()*(play2.length));
                 int yCoord = (int)Math.floor(Math.random()*(play2.length)); // select a random location for the bot's ships
-                buttonPressed2(xCoord, yCoord);
+                computerButtonPressed(xCoord, yCoord);
                 if (shipCount == 6) timer2.cancel();
             }
         };
@@ -768,11 +773,11 @@ public class gameFrame extends JFrame{ //extends JFrame so this class can just b
      * @param int demoninator, the denominator of the fraction
      * @return int, the gcd between the 2 numbers
      */
-    public int __gcd(int numerator, int denominator)
+    public int greatestCommonDenominator(int numerator, int denominator)
     {
         if (denominator == 0)
             return numerator;
-        return __gcd(denominator, numerator % denominator); //recurssion to keep finding the gcd
+        return greatestCommonDenominator(denominator, numerator % denominator); //recurssion to keep finding the gcd
          
     }
 
@@ -797,14 +802,15 @@ public class gameFrame extends JFrame{ //extends JFrame so this class can just b
                 }
                 else {
                     coordinateField.setText("");
-                    if (guessSpot(xCoord, yCoord) == 1) { // if the coordinate is valid 
+                    int coordinatePlaced = guessSpot(xCoord, yCoord);
+                    if (coordinatePlaced == 1) { // if the coordinate is valid 
                         coordinateField.setBackground(Color.lightGray);
                         coordinateField.setFocusable(false);
                         userGuessedArea.setText(userGuessedArea.getText() + "\n(" + xCoord + ", " + yCoord + ")");
                         playerTurn++;
                         botGuessShip();
                     }
-                    else if(guessSpot(xCoord, yCoord) == 2){ // if the coordinate is valid and you win the game
+                    else if(coordinatePlaced == 2){ // if the coordinate is valid and you win the game
                         coordinateField.setBackground(Color.lightGray);
                         coordinateField.setFocusable(false);
                     }
@@ -854,69 +860,87 @@ public class gameFrame extends JFrame{ //extends JFrame so this class can just b
                     errorLabel.setText("Error, please try again");
                 } else {
 
-                    int simplifyFraction = __gcd(rise, run); // find the gcd from the rise and run values
+                    int simplifyFraction = greatestCommonDenominator(rise, run); // find the gcd from the rise and run values
             
                     rise /= simplifyFraction; //divide the integers with the gcd found
                     run /= simplifyFraction;
                     int xCoord = 0;
                     int yCoord = yInt; // set the begining x and y coordinates
                     if (!userGuesses.contains("y = " + rise + "/" + run + " + " + yInt)) {
-                        userGuesses.add("y = " + rise + "/" + run + " + " + yInt);
-                        xCoord = 0;
-                        yCoord = yInt; // set the begining x and y coordinates
-                        while (xCoord <= play.length/2 && xCoord >= -play.length/2) { // continue the line until it reaches the end of the graph
-                            if (yCoord <= play.length/2 && yCoord >= -play.length/2) {
-                                int temp = guessSpot(xCoord, yCoord); //set a variable temporarily to check if it successfully places the coordinate and if there is a win
-                                if (temp == 1) {
-                                    riseTextField.setBackground(Color.lightGray);
-                                    riseTextField.setFocusable(false);
-                                    runTextField.setBackground(Color.lightGray);
-                                    runTextField.setFocusable(false);
-                                    yIntTextField.setBackground(Color.lightGray);
-                                    yIntTextField.setFocusable(false);
-                                    
-                                }
-                                else if(temp == 2){ // if there is a winner set the boolean winner to true
-                                    winner = true;
-                                }
+                        boolean occurance = false;
+                        for (int i = -5; i <= 5; i++) {
+                            int endPoint = (int)Math.floor((double)rise * (double)i / (double)run + (double)yInt); //solve for the y-values with the x-values throughout the board
+                            if (endPoint <= 5 && endPoint >= -5) {
+                                occurance = true;
+                                break;
                             }
-                            xCoord += run;
-                            yCoord += rise; // increment the x and y values with the rise and run values, increasing
                         }
-                        xCoord = 0;
-                        yCoord = yInt; // set the begining x and y coordinates
-                        while (xCoord <= play.length/2 && xCoord >= -play.length/2) {
-                            if (yCoord <= play.length/2 && yCoord >= -play.length/2) {
-                                int temp = guessSpot(xCoord, yCoord); //set a variable temporarily to check if it successfully places the coordinate and if there is a win
-                                if (temp == 1) {
-                                    riseTextField.setBackground(Color.lightGray);
-                                    riseTextField.setFocusable(false);
-                                    runTextField.setBackground(Color.lightGray);
-                                    runTextField.setFocusable(false);
-                                    yIntTextField.setBackground(Color.lightGray);
-                                    yIntTextField.setFocusable(false);
-                                    
+                        if (occurance) { // checks if the equation inputted actually occurs on the board
+                            userGuesses.add("y = " + rise + "/" + run + " + " + yInt);
+                            xCoord = 0;
+                            yCoord = yInt; // set the begining x and y coordinates
+                            while (xCoord <= play.length/2 && xCoord >= -play.length/2) { // continue the line until it reaches the end of the graph
+                                if (yCoord <= play.length/2 && yCoord >= -play.length/2) {
+                                    int coordinatePlaced = guessSpot(xCoord, yCoord); //set a variable temporarily to check if it successfully places the coordinate and if there is a win
+                                    if (coordinatePlaced == 1) {
+                                        riseTextField.setBackground(Color.lightGray);
+                                        riseTextField.setFocusable(false);
+                                        runTextField.setBackground(Color.lightGray);
+                                        runTextField.setFocusable(false);
+                                        yIntTextField.setBackground(Color.lightGray);
+                                        yIntTextField.setFocusable(false);
+                                        
+                                    }
+                                    else if(coordinatePlaced == 2){ // if there is a winner set the boolean winner to true
+                                        winner = true;
+                                    }
                                 }
-                                else if(temp == 2){  // if there is a winner set the boolean winner to true
-                                    winner = true;
-                                }
+                                xCoord += run;
+                                yCoord += rise; // increment the x and y values with the rise and run values, increasing
                             }
-                            xCoord -= run;
-                            yCoord -= rise; // increment the x and y values with the rise and run values, decreasing
+                            xCoord = 0;
+                            yCoord = yInt; // set the begining x and y coordinates
+                            while (xCoord <= play.length/2 && xCoord >= -play.length/2) {
+                                if (yCoord <= play.length/2 && yCoord >= -play.length/2) {
+                                    int coordinatePlaced = guessSpot(xCoord, yCoord); //set a variable temporarily to check if it successfully places the coordinate and if there is a win
+                                    if (coordinatePlaced == 1) {
+                                        riseTextField.setBackground(Color.lightGray);
+                                        riseTextField.setFocusable(false);
+                                        runTextField.setBackground(Color.lightGray);
+                                        runTextField.setFocusable(false);
+                                        yIntTextField.setBackground(Color.lightGray);
+                                        yIntTextField.setFocusable(false);
+                                        
+                                    }
+                                    else if(coordinatePlaced == 2){  // if there is a winner set the boolean winner to true
+                                        winner = true;
+                                    }
+                                }
+                                xCoord -= run;
+                                yCoord -= rise; // increment the x and y values with the rise and run values, decreasing
+                            }
+                            if (winner) { // if there is a winner
+                                riseTextField.setBackground(Color.lightGray);
+                                riseTextField.setFocusable(false);
+                                runTextField.setBackground(Color.lightGray);
+                                runTextField.setFocusable(false);
+                                yIntTextField.setBackground(Color.lightGray);
+                                yIntTextField.setFocusable(false);
+                            }
+                            else { // if there is not a repeating slope
+                                userGuessedArea.setText(userGuessedArea.getText() + "\n" + (equationLabel.getText().replace("—", rise + "/" + run)).replace("o", String.valueOf(yInt)));
+                                playerTurn++; //increment player turn
+                                equationLabel.setText("y = — x + o");
+                                botGuessShip(); // tell the computer to guess a slope
+                            }
                         }
-                        if (winner) { // if there is a winner
-                            riseTextField.setBackground(Color.lightGray);
-                            riseTextField.setFocusable(false);
-                            runTextField.setBackground(Color.lightGray);
-                            runTextField.setFocusable(false);
-                            yIntTextField.setBackground(Color.lightGray);
-                            yIntTextField.setFocusable(false);
-                        }
-                        else { // if there is not a repeating slope
-                            userGuessedArea.setText(userGuessedArea.getText() + "\n" + (equationLabel.getText().replace("—", rise + "/" + run)).replace("o", String.valueOf(yInt)));
-                            playerTurn++; //increment player turn
-                            equationLabel.setText("y = — x + o");
-                            botGuessShip(); // tell the computer to guess a slope
+                        else {
+                            riseTextField.setText("");
+                            runTextField.setText("");
+                            yIntTextField.setText("");
+                            errorLabel.setVisible(true);
+                            errorLabel.setFont(new Font("Verdana", Font.BOLD, 30));
+                            errorLabel.setText("Error, please try again");
                         }
                     }
                     else { // if the slope has already been guessed
@@ -963,72 +987,82 @@ public class gameFrame extends JFrame{ //extends JFrame so this class can just b
                     errorLabel.setText("Error, please try again");
                 } else {
 
-                    int simplifyFraction = __gcd(rise, run); // find the gcd from the rise and run values
+                    int simplifyFraction = greatestCommonDenominator(rise, run); // find the gcd from the rise and run values
             
                     rise /= simplifyFraction; //divide the integers with the gcd found
                     run /= simplifyFraction;
                     int xCoord = 0;
                     int yCoord = yInt; // set the begining x and y coordinate
                     if (!userGuesses.contains((equationLabel.getText().replace("—", rise + "/" + run)).replace("o", String.valueOf(yInt)))) {
-                        userGuesses.add((equationLabel.getText().replace("—", rise + "/" + run)).replace("o", String.valueOf(yInt)));
-                        if (equationLabel.getText().equals("y = — x + o")) {
-                            userGuessedArea.setText(userGuessedArea.getText() + "\n" + (equationLabel.getText().replace("—", rise + "/" + run)).replace("o", String.valueOf(yInt)));
-                            xCoord = 0;
-                            yCoord = yInt; // set the begining x and y coordinates
-                            while (xCoord <= play.length/2 && xCoord >= -play.length/2) { // continue the line until it reaches the end of the graph
-                                if (yCoord <= play.length/2 && yCoord >= -play.length/2) {
-                                    int temp = guessSpot(xCoord, yCoord); //set a variable temporarily to check if it successfully places the coordinate and if there is a win
-                                    if (temp == 1) {
-                                        riseTextField.setBackground(Color.lightGray);
-                                        riseTextField.setFocusable(false);
-                                        runTextField.setBackground(Color.lightGray);
-                                        runTextField.setFocusable(false);
-                                        yIntTextField.setBackground(Color.lightGray);
-                                        yIntTextField.setFocusable(false);
-                                        
-                                    }
-                                    else if(temp == 2){ // if there is a winner set the boolean winner to true
-                                        winner = true;
-                                    }
-                                }
-                                xCoord += run;
-                                yCoord += rise; // increment the x and y values with the rise and run values, increasing
-                            }
-                            xCoord = 0;
-                            yCoord = yInt; // set the begining x and y coordinates
-                            while (xCoord <= play.length/2 && xCoord >= -play.length/2) {
-                                if (yCoord <= play.length/2 && yCoord >= -play.length/2) {
-                                    int temp = guessSpot(xCoord, yCoord); //set a variable temporarily to check if it successfully places the coordinate and if there is a win
-                                    if (temp == 1) {
-                                        riseTextField.setBackground(Color.lightGray);
-                                        riseTextField.setFocusable(false);
-                                        runTextField.setBackground(Color.lightGray);
-                                        runTextField.setFocusable(false);
-                                        yIntTextField.setBackground(Color.lightGray);
-                                        yIntTextField.setFocusable(false);
-                                        
-                                    }
-                                    else if(temp == 2){  // if there is a winner set the boolean winner to true
-                                        winner = true;
-                                    }
-                                }
-                                xCoord -= run;
-                                yCoord -= rise; // increment the x and y values with the rise and run values, decreasing
+                        boolean occurance = false;
+                        for (int i = -5; i <= 5; i++) {
+                            int endPoint = (int)Math.floor((double)rise * (double)i / (double)run + (double)yInt); //solve for the y-values with the x-values throughout the board
+                            if (endPoint <= 5 && endPoint >= -5) {
+                                occurance = true;
+                                break;
                             }
                         }
-                        else guessInequality();
-                        if (winner) { // if there is a winner
-                            riseTextField.setBackground(Color.lightGray);
-                            riseTextField.setFocusable(false);
-                            runTextField.setBackground(Color.lightGray);
-                            runTextField.setFocusable(false);
-                            yIntTextField.setBackground(Color.lightGray);
-                            yIntTextField.setFocusable(false);
-                        }
-                        else { // if there is not a repeating slope
-                            playerTurn++; //increment player turn
-                            equationLabel.setText("y = — x + o");
-                            botGuessShip(); // tell the computer to guess a slope
+                        if (occurance) { // checks if the equation inputted actually occurs on the board
+                            userGuesses.add((equationLabel.getText().replace("—", rise + "/" + run)).replace("o", String.valueOf(yInt)));
+                            if (equationLabel.getText().equals("y = — x + o")) {
+                                userGuessedArea.setText(userGuessedArea.getText() + "\n" + (equationLabel.getText().replace("—", rise + "/" + run)).replace("o", String.valueOf(yInt)));
+                                xCoord = 0;
+                                yCoord = yInt; // set the begining x and y coordinates
+                                while (xCoord <= play.length/2 && xCoord >= -play.length/2) { // continue the line until it reaches the end of the graph
+                                    if (yCoord <= play.length/2 && yCoord >= -play.length/2) {
+                                        int coordinatePlaced = guessSpot(xCoord, yCoord); //set a variable temporarily to check if it successfully places the coordinate and if there is a win
+                                        if (coordinatePlaced == 1) {
+                                            riseTextField.setBackground(Color.lightGray);
+                                            riseTextField.setFocusable(false);
+                                            runTextField.setBackground(Color.lightGray);
+                                            runTextField.setFocusable(false);
+                                            yIntTextField.setBackground(Color.lightGray);
+                                            yIntTextField.setFocusable(false);
+                                            
+                                        }
+                                        else if(coordinatePlaced == 2){ // if there is a winner set the boolean winner to true
+                                            winner = true;
+                                        }
+                                    }
+                                    xCoord += run;
+                                    yCoord += rise; // increment the x and y values with the rise and run values, increasing
+                                }
+                                xCoord = 0;
+                                yCoord = yInt; // set the begining x and y coordinates
+                                while (xCoord <= play.length/2 && xCoord >= -play.length/2) {
+                                    if (yCoord <= play.length/2 && yCoord >= -play.length/2) {
+                                        int coordinatePlaced = guessSpot(xCoord, yCoord); //set a variable temporarily to check if it successfully places the coordinate and if there is a win
+                                        if (coordinatePlaced == 1) {
+                                            riseTextField.setBackground(Color.lightGray);
+                                            riseTextField.setFocusable(false);
+                                            runTextField.setBackground(Color.lightGray);
+                                            runTextField.setFocusable(false);
+                                            yIntTextField.setBackground(Color.lightGray);
+                                            yIntTextField.setFocusable(false);
+                                            
+                                        }
+                                        else if(coordinatePlaced == 2){  // if there is a winner set the boolean winner to true
+                                            winner = true;
+                                        }
+                                    }
+                                    xCoord -= run;
+                                    yCoord -= rise; // increment the x and y values with the rise and run values, decreasing
+                                }
+                            }
+                            else guessInequality();
+                            if (winner) { // if there is a winner
+                                riseTextField.setBackground(Color.lightGray);
+                                riseTextField.setFocusable(false);
+                                runTextField.setBackground(Color.lightGray);
+                                runTextField.setFocusable(false);
+                                yIntTextField.setBackground(Color.lightGray);
+                                yIntTextField.setFocusable(false);
+                            }
+                            else { // if there is not a repeating slope
+                                playerTurn++; //increment player turn
+                                equationLabel.setText("y = — x + o");
+                                botGuessShip(); // tell the computer to guess a slope
+                            }
                         }
                     }
                     else { // if the slope has already been guessed
@@ -1092,6 +1126,7 @@ public class gameFrame extends JFrame{ //extends JFrame so this class can just b
                     }
                     if (counter1 == 0 || counter2 == 0 || counter3 == 0) {
                         shipType.setVisible(true);
+                        shipType.setBounds(685, 650, 300, 50);
                         shipType.setText("SINK!");
                         if (counter1 == 0) { // if any boats sink, set them to 1 and don't reset their value to avoid saying sink after every turn
                             shipCheck3 = false;
@@ -1151,6 +1186,7 @@ public class gameFrame extends JFrame{ //extends JFrame so this class can just b
                     }
                     if (p2Counter1 == 0 || p2Counter2 == 0 || p2Counter3 == 0) {
                         shipType.setVisible(true);
+                        shipType.setBounds(685, 650, 300, 50);
                         shipType.setText("SINK!");
                         if (p2Counter1 == 0) { // if any  of the computer's boats sink, set them to 1 and don't reset their value to avoid saying sink after every turn
                             p2ShipCheck3 = false;
@@ -1197,7 +1233,7 @@ public class gameFrame extends JFrame{ //extends JFrame so this class can just b
             int middle = play.length/2; // middle of the game (0, 0)
             if (equationLabel.getText().equals("y < — x + o")) {
                 for (int i = -5; i <= 5; i++) {
-                    int endPoint = (int)Math.floor((double)rise * (double)i / (double)run + (double)yInt);
+                    int endPoint = (int)Math.floor((double)rise * (double)i / (double)run + (double)yInt); //solve for the y-values with the x-values throughout the board
                     for (int j = -5; j < endPoint; j++) {
                         try {
                             if (playerTurn % 2 == 0) {
@@ -1212,7 +1248,7 @@ public class gameFrame extends JFrame{ //extends JFrame so this class can just b
             }
             else if (equationLabel.getText().equals("y > — x + o")) {
                 for (int i = -5; i <= 5; i++) {
-                    int endPoint = (int)Math.floor((double)rise * (double)i / (double)run + (double)yInt);
+                    int endPoint = (int)Math.floor((double)rise * (double)i / (double)run + (double)yInt); //solve for the y-values with the x-values throughout the board
                     for (int j = 5; j > endPoint; j--) {
                         try {
                             if (playerTurn % 2 == 0) {
@@ -1227,7 +1263,7 @@ public class gameFrame extends JFrame{ //extends JFrame so this class can just b
             }
             else if (equationLabel.getText().equals("y ≤ — x + o")) {
                 for (int i = -5; i <= 5; i++) {
-                    int endPoint = (int)Math.floor((double)rise * (double)i / (double)run + (double)yInt);
+                    int endPoint = (int)Math.floor((double)rise * (double)i / (double)run + (double)yInt); //solve for the y-values with the x-values throughout the board
                     for (int j = -5; j <= endPoint; j++) {
                         try {
                             if (playerTurn % 2 == 0) {
@@ -1243,7 +1279,7 @@ public class gameFrame extends JFrame{ //extends JFrame so this class can just b
             else if (equationLabel.getText().equals("y ≥ — x + o")) {
                 for (int i = -5; i <= 5; i++) {
 
-                    int endPoint = (int)Math.floor((double)rise * (double)i / (double)run + (double)yInt);
+                    int endPoint = (int)Math.floor((double)rise * (double)i / (double)run + (double)yInt); //solve for the y-values with the x-values throughout the board
                     for (int j = 5; j >= endPoint; j--) {
                         try {
                             if (playerTurn % 2 == 0) {
@@ -1321,49 +1357,58 @@ public class gameFrame extends JFrame{ //extends JFrame so this class can just b
                             rise = (int)Math.floor(Math.random()*((play.length/2)-(-play.length/2)+1)+(-play.length/2));
                             run = (int)Math.floor(Math.random()*((play.length/2)-(-play.length/2)+1)+(-play.length/2));
                         }
-                        int simplifyFraction = __gcd(rise, run); //find the greatest common denominator between the 2 numbers
+                        int simplifyFraction = greatestCommonDenominator(rise, run); //find the greatest common denominator between the 2 numbers
                         rise /= simplifyFraction; // diving the rise and run by the gcd found
                         run /= simplifyFraction;
                         int xCoord = 0;
                         int yCoord = yInt; //set the beginning values of the x and y coordinates
 
                         if (!computerGuesses.contains("y = " + rise + "/" + run + " + " + yInt)) {
-                            computerGuesses.add("y = " + rise + "/" + run + " + " + yInt);
-                        
-                            riseTextField.setText(String.valueOf(rise)); // display the values that the computer is guessing on the text feilds, so the user knows what the computer guessed
-                            runTextField.setText(String.valueOf(run));
-                            yIntTextField.setText(String.valueOf(yInt));
-                            if (equationLabel.getText().equals("y = — x + o")) {
-                                xCoord = 0;
-                                yCoord = yInt; //set the beginning values of the x and y coordinates
-                                while (xCoord <= play.length/2  && xCoord >= -play.length/2) {
-                                    if (yCoord <= play.length/2 && yCoord >= -play.length/2) {
-                                        int temp = guessSpot(xCoord, yCoord); //set a variable temporarily to check if it successfully places the coordinate and if there is a win
-                                        if(temp == 2){ // if there is a winner, set winner to true
-                                            winner = true;
-                                        }
-                                    }
-                                    xCoord += run;
-                                    yCoord += rise;
-                                }
-                                xCoord = 0;
-                                yCoord = yInt; //set the beginning values of the x and y coordinates
-                                while (xCoord <= play.length/2 && xCoord >= -play.length/2) {
-                                    if (yCoord <= play.length/2 && yCoord >= -play.length/2) {
-                                        int temp = guessSpot(xCoord, yCoord); //set a variable temporarily to check if it successfully places the coordinate and if there is a win
-                                        if(temp == 2){ // if there is a winner, set winner to true
-                                            winner = true;
-                                        }
-                                    }
-                                    xCoord -= run;
-                                    yCoord -= rise;
+                            boolean occurance = false;
+                            for (int i = -5; i <= 5; i++) {
+                                int endPoint = (int)Math.floor((double)rise * (double)i / (double)run + (double)yInt); //solve for the y-values with the x-values throughout the board
+                                if (endPoint <= 5 && endPoint >= -5) {
+                                    occurance = true;
+                                    break;
                                 }
                             }
-                            else guessInequality();
-                            if (winner) timer3.cancel(); //if there is a winner stop the timer prevent the game from continuing
-                            else { // if there is no error, increment counter
-                                computerGuessedArea.setText(computerGuessedArea.getText() + "\n" + (equationLabel.getText().replace("—", rise + "/" + run)).replace("o", String.valueOf(yInt)));
-                                count++; 
+                            if (occurance) { // checks if the equation inputted actually occurs on the board
+                                computerGuesses.add("y = " + rise + "/" + run + " + " + yInt);
+                                riseTextField.setText(String.valueOf(rise)); // display the values that the computer is guessing on the text feilds, so the user knows what the computer guessed
+                                runTextField.setText(String.valueOf(run));
+                                yIntTextField.setText(String.valueOf(yInt));
+                                if (equationLabel.getText().equals("y = — x + o")) {
+                                    xCoord = 0;
+                                    yCoord = yInt; //set the beginning values of the x and y coordinates
+                                    while (xCoord <= play.length/2  && xCoord >= -play.length/2) {
+                                        if (yCoord <= play.length/2 && yCoord >= -play.length/2) {
+                                            int coordinatePlaced = guessSpot(xCoord, yCoord); //set a variable temporarily to check if it successfully places the coordinate and if there is a win
+                                            if(coordinatePlaced == 2){ // if there is a winner, set winner to true
+                                                winner = true;
+                                            }
+                                        }
+                                        xCoord += run;
+                                        yCoord += rise;
+                                    }
+                                    xCoord = 0;
+                                    yCoord = yInt; //set the beginning values of the x and y coordinates
+                                    while (xCoord <= play.length/2 && xCoord >= -play.length/2) {
+                                        if (yCoord <= play.length/2 && yCoord >= -play.length/2) {
+                                            int coordinatePlaced = guessSpot(xCoord, yCoord); //set a variable temporarily to check if it successfully places the coordinate and if there is a win
+                                            if(coordinatePlaced == 2){ // if there is a winner, set winner to true
+                                                winner = true;
+                                            }
+                                        }
+                                        xCoord -= run;
+                                        yCoord -= rise;
+                                    }
+                                }
+                                else guessInequality();
+                                if (winner) timer3.cancel(); //if there is a winner stop the timer prevent the game from continuing
+                                else { // if there is no error, increment counter
+                                    computerGuessedArea.setText(computerGuessedArea.getText() + "\n" + (equationLabel.getText().replace("—", rise + "/" + run)).replace("o", String.valueOf(yInt)));
+                                    count++; 
+                                }
                             }
                         }
                     }
@@ -1384,53 +1429,63 @@ public class gameFrame extends JFrame{ //extends JFrame so this class can just b
                         boolean winner = false;
                         rise = 0;
                         run = 0;
-                        yInt = (int)Math.floor(Math.random()*((play.length/2)-(-play.length/2)+1)+(-play.length/2)); // randomize nubers within the range of the board
+                        yInt = (int)Math.floor(Math.random()*((play.length)-(-play.length)+1)+(-play.length)); // randomize nubers within the range of the board
                         while (rise == 0 || run == 0) { //make sure neither of the values are equal to 0
                             rise = (int)Math.floor(Math.random()*((play.length/2)-(-play.length/2)+1)+(-play.length/2));
                             run = (int)Math.floor(Math.random()*((play.length/2)-(-play.length/2)+1)+(-play.length/2));
                         }
-                        int simplifyFraction = __gcd(rise, run); //find the greatest common denominator between the 2 numbers
+                        int simplifyFraction = greatestCommonDenominator(rise, run); //find the greatest common denominator between the 2 numbers
                         rise /= simplifyFraction; // diving the rise and run by the gcd found
                         run /= simplifyFraction;
                         int xCoord = 0;
                         int yCoord = yInt; //set the beginning values of the x and y coordinates
                         if (!computerGuesses.contains((equationLabel.getText().replace("—", rise + "/" + run)).replace("o", String.valueOf(yInt)))) {
-                            computerGuesses.add((equationLabel.getText().replace("—", rise + "/" + run)).replace("o", String.valueOf(yInt)));
-                        
-                            riseTextField.setText(String.valueOf(rise)); // display the values that the computer is guessing on the text feilds, so the user knows what the computer guessed
-                            runTextField.setText(String.valueOf(run));
-                            yIntTextField.setText(String.valueOf(yInt));
-                            if (equationLabel.getText().equals("y = — x + o")) {
-                                computerGuessedArea.setText(computerGuessedArea.getText() + "\n" + (equationLabel.getText().replace("—", rise + "/" + run)).replace("o", String.valueOf(yInt)));
-                                xCoord = 0;
-                                yCoord = yInt; //set the beginning values of the x and y coordinates
-                                while (xCoord <= play.length/2  && xCoord >= -play.length/2) {
-                                    if (yCoord <= play.length/2 && yCoord >= -play.length/2) {
-                                        int temp = guessSpot(xCoord, yCoord); //set a variable temporarily to check if it successfully places the coordinate and if there is a win
-                                        if(temp == 2){ // if there is a winner, set winner to true
-                                            winner = true;
-                                        }
-                                    }
-                                    xCoord += run;
-                                    yCoord += rise;
-                                }
-                                xCoord = 0;
-                                yCoord = yInt; //set the beginning values of the x and y coordinates
-                                while (xCoord <= play.length/2 && xCoord >= -play.length/2) {
-                                    if (yCoord <= play.length/2 && yCoord >= -play.length/2) {
-                                        int temp = guessSpot(xCoord, yCoord); //set a variable temporarily to check if it successfully places the coordinate and if there is a win
-                                        if(temp == 2){ // if there is a winner, set winner to true
-                                            winner = true;
-                                        }
-                                    }
-                                    xCoord -= run;
-                                    yCoord -= rise;
+                            boolean occurance = false;
+                            for (int i = -5; i <= 5; i++) {
+                                int endPoint = (int)Math.floor((double)rise * (double)i / (double)run + (double)yInt); //solve for the y-values with the x-values throughout the board
+                                if (endPoint <= 5 && endPoint >= -5) {
+                                    occurance = true;
+                                    break;
                                 }
                             }
-                            else guessInequality();
-                            if (winner) timer3.cancel(); //if there is a winner stop the timer prevent the game from continuing
-                            else { // if there is no error, increment counter
-                                count++; 
+                            if (occurance) { // checks if the equation inputted actually occurs on the board
+                                computerGuesses.add((equationLabel.getText().replace("—", rise + "/" + run)).replace("o", String.valueOf(yInt)));
+                            
+                                riseTextField.setText(String.valueOf(rise)); // display the values that the computer is guessing on the text feilds, so the user knows what the computer guessed
+                                runTextField.setText(String.valueOf(run));
+                                yIntTextField.setText(String.valueOf(yInt));
+                                if (equationLabel.getText().equals("y = — x + o")) {
+                                    computerGuessedArea.setText(computerGuessedArea.getText() + "\n" + (equationLabel.getText().replace("—", rise + "/" + run)).replace("o", String.valueOf(yInt)));
+                                    xCoord = 0;
+                                    yCoord = yInt; //set the beginning values of the x and y coordinates
+                                    while (xCoord <= play.length/2  && xCoord >= -play.length/2) {
+                                        if (yCoord <= play.length/2 && yCoord >= -play.length/2) {
+                                            int coordinatePlaced = guessSpot(xCoord, yCoord); //set a variable temporarily to check if it successfully places the coordinate and if there is a win
+                                            if(coordinatePlaced == 2){ // if there is a winner, set winner to true
+                                                winner = true;
+                                            }
+                                        }
+                                        xCoord += run;
+                                        yCoord += rise;
+                                    }
+                                    xCoord = 0;
+                                    yCoord = yInt; //set the beginning values of the x and y coordinates
+                                    while (xCoord <= play.length/2 && xCoord >= -play.length/2) {
+                                        if (yCoord <= play.length/2 && yCoord >= -play.length/2) {
+                                            int coordinatePlaced = guessSpot(xCoord, yCoord); //set a variable temporarily to check if it successfully places the coordinate and if there is a win
+                                            if(coordinatePlaced == 2){ // if there is a winner, set winner to true
+                                                winner = true;
+                                            }
+                                        }
+                                        xCoord -= run;
+                                        yCoord -= rise;
+                                    }
+                                }
+                                else guessInequality();
+                                if (winner) timer3.cancel(); //if there is a winner stop the timer prevent the game from continuing
+                                else { // if there is no error, increment counter
+                                    count++; 
+                                }
                             }
                         }
                     }
