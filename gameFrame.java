@@ -399,6 +399,7 @@ public class gameFrame extends JFrame{ //extends JFrame so this class can just b
 
     /**
      * initailize the functions of the game and display the needed buttons/textfeild depending on the difficulty
+     * @param int level, thee difficulty of the game
      * @return void
      */
     public void startGame(int level) {
