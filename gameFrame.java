@@ -2,6 +2,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.*;
+import java.io.*;
 
 /**
    * new class that implements the JFrame and creates and adds all components of the game
@@ -67,7 +68,8 @@ public class gameFrame extends JFrame{ //extends JFrame so this class can just b
     int counter1 = 0, counter2 = 0, counter3 = 0; // these count the number of ships on the board after every turn
     int p2Counter1 = 0, p2Counter2 = 0, p2Counter3 = 0;
     Score score;
-    
+    FileWriter userHistory = null; //text files that hold the history of both players including the board of each player
+    FileWriter computerHistory = null;    
     /**
      * parameter initializes everything in the game needed
      */
@@ -80,8 +82,12 @@ public class gameFrame extends JFrame{ //extends JFrame so this class can just b
         getContentPane().setBackground(Color.BLACK);
         getContentPane().setLayout(null);
         setTitle("Instructions");
+        try {
+            userHistory = new FileWriter("userHistory.txt"); //declare the location of each text file
+            computerHistory = new FileWriter("computerHistory.txt");
+          } catch (Exception err) {}
 
-        instructions.setFont(new Font("Verdana", Font.BOLD, 25));
+        instructions.setFont(new Font("Verdana", Font.BOLD, 25)); // the frame shows these instructions before the game starts
         instructions.setBounds(20, 0, 1250, 600);
         instructions.setForeground(Color.WHITE);
         instructions.setVisible(true);
@@ -460,8 +466,20 @@ public class gameFrame extends JFrame{ //extends JFrame so this class can just b
      * @return void
      */
     public void playAgain() { // if userBoard again is pressed, detroy the current JFrame and create a new one.
-        dispose(); // destroy the current JFrame
-        new gameFrame(); // create a new JFrame
+        //dispose(); // destroy the current JFrame
+        //new gameFrame(); // create a new JFrame
+
+        turnJLabel.setText("Your Turn");
+        turnJLabel.setVisible(true);
+        resetButton.setVisible(false);
+        for (int i = 0; i < userBoard.length; i++) {
+            for (int j =0; j < userBoard.length; j++) {
+                userBoard[i][j].setText("");
+                computerBoard[i][j].setText("");
+            }
+        }
+        shipCount = 0;
+        startGame(difficulty);
     }
 
 
@@ -673,6 +691,25 @@ public class gameFrame extends JFrame{ //extends JFrame so this class can just b
         try {
         shipType.setText("Ship: " + ships[shipCount]); // display the type of ship being placed based on length
         } catch (ArrayIndexOutOfBoundsException e) {
+            try {
+                computerHistory.write("Computer's board:\n");
+            } catch (IOException err){}
+            for (int i = 0; i < computerBoard.length; i++) {
+                for (int j = 0; j < computerBoard.length; j++) {
+                    try {
+                        if (computerBoard[j][i].getText().equals("")) computerHistory.write("●  ");
+                        else computerHistory.write("X  ");
+                        computerHistory.flush();
+                    }catch (IOException er){}
+                }
+                try {
+                    computerHistory.write("\n");
+                }catch (IOException er){}
+            }
+            try{
+                computerHistory.write("\n\n\nComputer's Guesses:\n");
+                computerHistory.flush();
+            } catch(Exception er){}
             if (difficulty == 1) { //when difficulty is 1, set the coordinate stuff focusable
                 coordinateField.setBackground(Color.WHITE);
                 coordinateField.setFocusable(true);
@@ -738,7 +775,8 @@ public class gameFrame extends JFrame{ //extends JFrame so this class can just b
 
                 if (shipCount <= 3) shipType.setText("Ship: " + ships[shipCount]); // display the type of ship being placed based on length
                 if (shipCount == 3) {
-                    shipColour = Color.BLUE; // when shipCount is equal to 3 (the user has placed all thier ships), set player to Colour Blue
+                    
+                    shipColour = Color.lightGray; // when shipCount is equal to 3 (the user has placed all thier ships), set the color to light gray
                     repaint();
                     playerTurn++;
                     turnJLabel.setText("<html>Computer's<br/>Turn</html>"); // once the user has placed all of their ships, indicate its the coputer's turn and allow the bot to userBoard its ship
@@ -754,6 +792,26 @@ public class gameFrame extends JFrame{ //extends JFrame so this class can just b
      * @return void
      */
     public void botPlaceShips() {
+        try {
+            userHistory.write("User's board:\n");
+        } catch (IOException er){}
+        for (int i = 0; i < userBoard.length; i++) {
+            for (int j = 0; j < userBoard.length; j++) {
+                try{
+                    if (userBoard[j][i].getText().equals("")) userHistory.write("●  ");
+                    else userHistory.write("X  ");
+                    userHistory.flush();
+                } catch(Exception e){}
+            }
+            try{
+            userHistory.write("\n");
+            } catch(Exception e){}
+        }
+        try{
+            userHistory.write("\n\n\nUser's Guesses:\n");
+            userHistory.flush();
+        } catch(Exception e){}
+
 
         TimerTask task2 = new TimerTask() {
             @Override
@@ -762,7 +820,9 @@ public class gameFrame extends JFrame{ //extends JFrame so this class can just b
                 int xCoord = (int)Math.floor(Math.random()*(computerBoard.length));
                 int yCoord = (int)Math.floor(Math.random()*(computerBoard.length)); // select a random location for the bot's ships
                 computerButtonPressed(xCoord, yCoord);
-                if (shipCount == 6) timer2.cancel();
+                if (shipCount == 6)  {
+                    timer2.cancel();
+                }
             }
         };
         timer2.scheduleAtFixedRate(task2, 3000, 3000); // set a timer, so the placement seems realitic as if a person is placing the sips
@@ -797,6 +857,10 @@ public class gameFrame extends JFrame{ //extends JFrame so this class can just b
                         coordinateField.setBackground(Color.lightGray);
                         coordinateField.setFocusable(false);
                         userGuessedArea.setText(userGuessedArea.getText() + "\n(" + xCoord + ", " + yCoord + ")");
+                        try {
+                            userHistory.write("(" + xCoord + ", " + yCoord + ")\n");
+                            userHistory.flush();
+                        } catch (Exception e){}
                         playerTurn++;
                         botGuessShip();
                     }
@@ -835,7 +899,7 @@ public class gameFrame extends JFrame{ //extends JFrame so this class can just b
                 } else {
                     int xCoord = 0;
                     int yCoord = yInt; // set the begining x and y coordinates
-                    if (!userGuesses.contains("y = " + rise + "/" + run + " + " + yInt)) {
+                    if (!userGuesses.contains("y = " + rise + "/" + run + " x + " + yInt)) {
                         boolean occurance = false;
                         for (int i = -5; i <= 5; i++) {
                             int endPoint = (int)Math.floor((double)rise * (double)i / (double)run + (double)yInt); //solve for the y-values with the x-values throughout the board
@@ -845,7 +909,11 @@ public class gameFrame extends JFrame{ //extends JFrame so this class can just b
                             }
                         }
                         if (occurance) { // checks if the equation inputted actually occurs on the board
-                            userGuesses.add("y = " + rise + "/" + run + " + " + yInt);
+                            userGuesses.add("y = " + rise + "/" + run + " x + " + yInt);
+                            try {
+                                userHistory.write("y = " + rise + "/" + run + " x + " + yInt + "\n");
+                                userHistory.flush();
+                            } catch (Exception e){}
                             xCoord = 0;
                             yCoord = yInt; // set the begining x and y coordinates
                             while (xCoord <= userBoard.length/2 && xCoord >= -userBoard.length/2) { // continue the line until it reaches the end of the graph
@@ -955,8 +1023,13 @@ public class gameFrame extends JFrame{ //extends JFrame so this class can just b
                         }
                         if (occurance) { // checks if the equation inputted actually occurs on the board
                             userGuesses.add((equationLabel.getText().replace("—", rise + "/" + run)).replace("o", String.valueOf(yInt)));
+                            
                             if (equationLabel.getText().equals("y = — x + o")) {
                                 userGuessedArea.setText(userGuessedArea.getText() + "\n" + (equationLabel.getText().replace("—", rise + "/" + run)).replace("o", String.valueOf(yInt)));
+                                try {
+                                    userHistory.write((equationLabel.getText().replace("—", rise + "/" + run)).replace("o", String.valueOf(yInt))+ "\n");
+                                    userHistory.flush();
+                                } catch (Exception e){}
                                 xCoord = 0;
                                 yCoord = yInt; // set the begining x and y coordinates
                                 while (xCoord <= userBoard.length/2 && xCoord >= -userBoard.length/2) { // continue the line until it reaches the end of the graph
@@ -1252,9 +1325,17 @@ public class gameFrame extends JFrame{ //extends JFrame so this class can just b
             }
             if (playerTurn % 2 == 0) {
                 userGuessedArea.setText(userGuessedArea.getText() + "\n" + (equationLabel.getText().replace("—", rise + "/" + run)).replace("o", String.valueOf(yInt)) + ",   new ships found: " + userShipCount);
+                try {
+                    userHistory.write((equationLabel.getText().replace("—", rise + "/" + run)).replace("o", String.valueOf(yInt)) + ",   new ships found: " + userShipCount + "\n");
+                    userHistory.flush();
+                } catch (Exception e){}
             }
             else {
                 computerGuessedArea.setText(computerGuessedArea.getText() + "\n" + (equationLabel.getText().replace("—", rise + "/" + run)).replace("o", String.valueOf(yInt)) + ",   new ships found: " + computerShipCount);
+                try {
+                    computerHistory.write((equationLabel.getText().replace("—", rise + "/" + run)).replace("o", String.valueOf(yInt)) + ",   new ships found: " + userShipCount + "\n");
+                    computerHistory.flush();
+                } catch (Exception e){}
             }
     }
     /**
@@ -1300,6 +1381,10 @@ public class gameFrame extends JFrame{ //extends JFrame so this class can just b
                         int coordinatePlaced = guessSpot(xCoord, yCoord);
                         if (coordinatePlaced == 1)  { // if the coordiate is valid increment the counter
                             computerGuessedArea.setText(computerGuessedArea.getText() + "\n(" + xCoord + ", " + yCoord + ")");
+                            try {
+                                computerHistory.write("(" + xCoord + ", " + yCoord + ")\n");
+                                computerHistory.flush();
+                            } catch (Exception e){}
                             count++; 
                         }
                         else if(coordinatePlaced == 2){  // if the computer wins the game
@@ -1318,7 +1403,7 @@ public class gameFrame extends JFrame{ //extends JFrame so this class can just b
                         int xCoord = 0;
                         int yCoord = yInt; //set the beginning values of the x and y coordinates
 
-                        if (!computerGuesses.contains("y = " + rise + "/" + run + " + " + yInt)) {
+                        if (!computerGuesses.contains("y = " + rise + "/" + run + " x + " + yInt)) {
                             boolean occurance = false;
                             for (int i = -5; i <= 5; i++) {
                                 int endPoint = (int)Math.floor((double)rise * (double)i / (double)run + (double)yInt); //solve for the y-values with the x-values throughout the board
@@ -1328,7 +1413,11 @@ public class gameFrame extends JFrame{ //extends JFrame so this class can just b
                                 }
                             }
                             if (occurance) { // checks if the equation inputted actually occurs on the board
-                                computerGuesses.add("y = " + rise + "/" + run + " + " + yInt);
+                                computerGuesses.add("y = " + rise + "/" + run + " x + " + yInt );
+                                try {
+                                    computerHistory.write("y = " + rise + "/" + run + " x + " + yInt+ "\n");
+                                    computerHistory.flush();
+                                } catch (Exception e){}
                                 riseTextField.setText(String.valueOf(rise)); // display the values that the computer is guessing on the text feilds, so the user knows what the computer guessed
                                 runTextField.setText(String.valueOf(run));
                                 yIntTextField.setText(String.valueOf(yInt));
@@ -1392,7 +1481,8 @@ public class gameFrame extends JFrame{ //extends JFrame so this class can just b
                             boolean occurance = false;
                             for (int i = -5; i <= 5; i++) {
                                 int endPoint = (int)Math.floor((double)rise * (double)i / (double)run + (double)yInt); //solve for the y-values with the x-values throughout the board
-                                if (endPoint <= 5 && endPoint >= -5) {
+                                if (endPoint <= 5 && endPoint >= -
+                                5) {
                                     occurance = true;
                                     break;
                                 }
@@ -1405,6 +1495,10 @@ public class gameFrame extends JFrame{ //extends JFrame so this class can just b
                                 yIntTextField.setText(String.valueOf(yInt));
                                 if (equationLabel.getText().equals("y = — x + o")) {
                                     computerGuessedArea.setText(computerGuessedArea.getText() + "\n" + (equationLabel.getText().replace("—", rise + "/" + run)).replace("o", String.valueOf(yInt)));
+                                    try {
+                                        computerHistory.write((equationLabel.getText().replace("—", rise + "/" + run)).replace("o", String.valueOf(yInt)) + "\n");
+                                        computerHistory.flush();
+                                    } catch (Exception e){}
                                     xCoord = 0;
                                     yCoord = yInt; //set the beginning values of the x and y coordinates
                                     while (xCoord <= userBoard.length/2  && xCoord >= -userBoard.length/2) {
