@@ -1,8 +1,14 @@
+/**
+ * @author duamanan
+ * @author GeldelaMohit
+ */
+
 import javax.swing.*;
 
 //Create player object to get values inputted by the user and computer
 public class player {
 
+    //instance variables
     private JTextField coordinateField;
     private JTextField riseTextField;
     private JTextField runTextField;
