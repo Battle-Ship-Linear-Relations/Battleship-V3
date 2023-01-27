@@ -1,3 +1,8 @@
+/**
+ * @author duamanan
+ * @author GeldelaMohit
+ */
+
 import javax.swing.*;
 import java.awt.*;
 
