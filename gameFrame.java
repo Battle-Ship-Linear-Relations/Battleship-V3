@@ -1,3 +1,8 @@
+/**
+ * @author duamanan
+ * @author GeldelaMohit
+ */
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
@@ -75,7 +80,7 @@ public class gameFrame extends JFrame{ //extends JFrame so this class can just b
     FileWriter computerHistory = null;    
     Ship ship = new Ship(userBoard, shipLength); //create a ship
     /**
-     * parameter initializes everything in the game needed
+     * constructor that initializes everything in the game needed
      */
     gameFrame() { // initialize everything that is going to be on the GUI
 
@@ -104,9 +109,6 @@ public class gameFrame extends JFrame{ //extends JFrame so this class can just b
                 setSize(1550, 1000); // set the bounds of the game
                 setTitle("Battleship");
                 score = new Score(scoresLabel);
-                setVisible(true);
-                setResizable(false);
-                setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
                 okButton.setVisible(false);
                 instructions.setVisible(false);
@@ -374,36 +376,35 @@ public class gameFrame extends JFrame{ //extends JFrame so this class can just b
                                     }
                                 }
                                 ship.shipHover(rotate, shipColour, mouseX, mouseY); //create a new ship immediately with new rotation
-                                repaint();
                             }
                         }
                         return false;
                     }
                 });
                 
-                    level1Button.setFont(new Font("Verdana", Font.BOLD, 30)); // level 1 button
-                    level1Button.setBounds(620, 360, 75, 75);
-                    level1Button.setForeground(Color.BLACK);
-                    level1Button.setBackground(Color.WHITE);
-                    level1Button.setFocusable(false);
-                    level1Button.addActionListener(f -> startGame(1)); // if level 1 is pressed, the difficuly is set to 1 (the coordinate version)
-                    add(level1Button);
+                level1Button.setFont(new Font("Verdana", Font.BOLD, 30)); // level 1 button
+                level1Button.setBounds(620, 360, 75, 75);
+                level1Button.setForeground(Color.BLACK);
+                level1Button.setBackground(Color.WHITE);
+                level1Button.setFocusable(false);
+                level1Button.addActionListener(f -> startGame(1)); // if level 1 is pressed, the difficuly is set to 1 (the coordinate version)
+                add(level1Button);
 
-                    level2Button.setFont(new Font("Verdana", Font.BOLD, 30)); //level 2 button
-                    level2Button.setBounds(740, 360, 75, 75);
-                    level2Button.setForeground(Color.BLACK);
-                    level2Button.setBackground(Color.WHITE);
-                    level2Button.setFocusable(false);
-                    level2Button.addActionListener(f -> startGame(2)); // if level 1 is pressed, the difficuly is set to 2 (the slope version)
-                    add(level2Button);
+                level2Button.setFont(new Font("Verdana", Font.BOLD, 30)); //level 2 button
+                level2Button.setBounds(740, 360, 75, 75);
+                level2Button.setForeground(Color.BLACK);
+                level2Button.setBackground(Color.WHITE);
+                level2Button.setFocusable(false);
+                level2Button.addActionListener(f -> startGame(2)); // if level 1 is pressed, the difficuly is set to 2 (the slope version)
+                add(level2Button);
 
-                    level3Button.setFont(new Font("Verdana", Font.BOLD, 30)); //level 2 button
-                    level3Button.setBounds(860, 360, 75, 75);
-                    level3Button.setForeground(Color.BLACK);
-                    level3Button.setBackground(Color.WHITE);
-                    level3Button.setFocusable(false);
-                    level3Button.addActionListener(f -> startGame(3)); // if level 1 is pressed, the difficuly is set to 2 (the slope version)
-                    add(level3Button);
+                level3Button.setFont(new Font("Verdana", Font.BOLD, 30)); //level 2 button
+                level3Button.setBounds(860, 360, 75, 75);
+                level3Button.setForeground(Color.BLACK);
+                level3Button.setBackground(Color.WHITE);
+                level3Button.setFocusable(false);
+                level3Button.addActionListener(f -> startGame(3)); // if level 1 is pressed, the difficuly is set to 2 (the slope version)
+                add(level3Button);
                 TimerTask task = new TimerTask() {
                     @Override
                     public void run() {
@@ -414,7 +415,6 @@ public class gameFrame extends JFrame{ //extends JFrame so this class can just b
             }
         });
         add(okButton);
-        repaint();
     }
 
 
@@ -432,8 +432,6 @@ public class gameFrame extends JFrame{ //extends JFrame so this class can just b
         turnJLabel.setVisible(true);
         rotateLabel.setVisible(true);
         shipType.setVisible(true);
-        
-        //addKeyListener(rPressed);
         try {
             userHistory = new FileWriter(userFile); //declare the location of each text file
             computerHistory = new FileWriter(computerFile);
@@ -455,31 +453,26 @@ public class gameFrame extends JFrame{ //extends JFrame so this class can just b
             coordinateLabel.setVisible(true);
         }
 
-        else if (difficulty == 2) { // if difficulty is 2 (slope version)
+        else if (difficulty > 1) { // if difficulty is 2 (slope version)
             equationLabel.setVisible(true);// set the slope stuff visible
             yIntTextField.setVisible(true);
             riseTextField.setVisible(true);
             runTextField.setVisible(true);
-        }
-
-        else if (difficulty == 3) { // if difficulty is 3 (inequality version)
-            equationLabel.setVisible(true);// set the inequality stuff visible
-            yIntTextField.setVisible(true);
-            riseTextField.setVisible(true);
-            runTextField.setVisible(true);
-            lessThanButton.setVisible(true);
+            if (difficulty == 3) {
+                lessThanButton.setVisible(true);
             greaterThanButton.setVisible(true);
             equalButton.setVisible(true);
             lessThanEqualButton.setVisible(true);
             greaterThanEqualButton.setVisible(true);
+            }
         }
     }
 
     /**
-     * if the userBoard again button is pressed, create a new game
+     * if the play again button is pressed, create a new game
      * @return void
      */
-    public void playAgain() { // if userBoard again is pressed, detroy the current JFrame and create a new one.       
+    public void playAgain() { // if play again is pressed, detroy the current JFrame and create a new one.       
         shipCount = 0;
         turnJLabel.setText("Your Turn");
         turnJLabel.setVisible(true);
@@ -631,7 +624,6 @@ public class gameFrame extends JFrame{ //extends JFrame so this class can just b
                 greaterThanEqualButton.setEnabled(true);
             }
             shipType.setVisible(false);
-            repaint();
             turnJLabel.setText("Your Turn"); // indicate its the user's turn
         }
         
@@ -673,8 +665,7 @@ public class gameFrame extends JFrame{ //extends JFrame so this class can just b
                     if (shipCount <= 3) shipType.setText("Ship: " + ships[shipCount]); // display the type of ship being placed based on length
                     if (shipCount == 3) {
                         
-                        shipColour = Color.BLUE; // when shipCount is equal to 3 (the user has placed all thier ships), set the color to light gray
-                        repaint();
+                        shipColour = Color.lightGray; // when shipCount is equal to 3 (the user has placed all thier ships), set the color to light gray
                         playerTurn++;
                         turnJLabel.setText("<html>Computer's<br/>Turn</html>"); // once the user has placed all of their ships, indicate its the coputer's turn and allow the bot to userBoard its ship
                         rotateLabel.setVisible(false);
@@ -698,14 +689,6 @@ public class gameFrame extends JFrame{ //extends JFrame so this class can just b
      * @return void
      */
     public void botPlaceShips() {
-        if (shipCount == 0 || shipCount == 3) {
-            shipLength = 4;
-        } else if (shipCount == 1 || shipCount == 4) {
-            shipLength = 3;
-        } else if (shipCount == 2 || shipCount == 5) {
-            shipLength = 2;
-        }
-        ship = new Ship(computerBoard, shipLength); // create a new ship based on its length
         try {
             userHistory.write("User's board:\n");
         } catch (IOException er){}
@@ -816,142 +799,7 @@ public class gameFrame extends JFrame{ //extends JFrame so this class can just b
                 errorLabel.setText("Error, please try again");
             }
         }
-
-        if (difficulty == 2) { // if the difficulty is the slope version
-            try {
-                errorLabel.setVisible(false);
-                boolean winner = false; // winner checks if there has been a winner after an input
-
-                int slopeValues[] = player.level2Values();
-                rise = slopeValues[0];
-                run = slopeValues[1];
-                yInt = slopeValues[2];
-                
-                if (rise == 0 || run == 0) { // make sure the values are not 0, so it isnt an error or a stright line
-                    errorLabel.setVisible(true);
-                    errorLabel.setFont(new Font("Verdana", Font.BOLD, 30));
-                    errorLabel.setText("Error, please try again");
-                } else {
-                    int xCoord = 0;
-                    int yCoord = yInt; // set the begining x and y coordinates
-                    if (!userGuesses.contains("y = " + rise + "/" + run + " x + " + yInt)) {
-                        boolean occurance = false;
-                        for (int i = -5; i <= 5; i++) {
-                            int endPoint = (int)Math.floor((double)rise * (double)i / (double)run + (double)yInt); //solve for the y-values with the x-values throughout the board
-                            if (endPoint <= 5 && endPoint >= -5) {
-                                occurance = true;
-                                break;
-                            }
-                        }
-                        if (occurance) { // checks if the equation inputted actually occurs on the board
-                            userGuesses.add("y = " + rise + "/" + run + " x + " + yInt);
-                            userGuessedArea.setText(userGuessedArea.getText() + "\n" + (equationLabel.getText().replace("—", rise + "/" + run)).replace("o", String.valueOf(yInt)));
-                            try {
-                                userHistory.write("y = " + rise + "/" + run + " x + " + yInt + "\n");
-                                userHistory.flush();
-                            } catch (Exception e){}
-                            xCoord = 0;
-                            yCoord = yInt; // set the begining x and y coordinates
-                            while (xCoord <= userBoard.length/2 && xCoord >= -userBoard.length/2) { // continue the line until it reaches the end of the graph
-                                if (yCoord <= userBoard.length/2 && yCoord >= -userBoard.length/2) {
-                                    int coordinatePlaced = guessSpot(xCoord, yCoord); //set a variable temporarily to check if it successfully places the coordinate and if there is a win
-                                    if (coordinatePlaced == 1) {
-                                        riseTextField.setBackground(Color.lightGray);
-                                        riseTextField.setFocusable(false);
-                                        runTextField.setBackground(Color.lightGray);
-                                        runTextField.setFocusable(false);
-                                        yIntTextField.setBackground(Color.lightGray);
-                                        yIntTextField.setFocusable(false);
-                                        
-                                    }
-                                    else if(coordinatePlaced == 2){ // if there is a winner set the boolean winner to true
-                                        winner = true;
-                                    }
-                                }
-                                xCoord += run;
-                                yCoord += rise; // increment the x and y values with the rise and run values, increasing
-                            }
-                            xCoord = 0;
-                            yCoord = yInt; // set the begining x and y coordinates
-                            while (xCoord <= userBoard.length/2 && xCoord >= -userBoard.length/2) {
-                                if (yCoord <= userBoard.length/2 && yCoord >= -userBoard.length/2) {
-                                    int coordinatePlaced = guessSpot(xCoord, yCoord); //set a variable temporarily to check if it successfully places the coordinate and if there is a win
-                                    if (coordinatePlaced == 1) {
-                                        riseTextField.setBackground(Color.lightGray);
-                                        riseTextField.setFocusable(false);
-                                        runTextField.setBackground(Color.lightGray);
-                                        runTextField.setFocusable(false);
-                                        yIntTextField.setBackground(Color.lightGray);
-                                        yIntTextField.setFocusable(false);
-                                        
-                                    }
-                                    else if(coordinatePlaced == 2){  // if there is a winner set the boolean winner to true
-                                        winner = true;
-                                    }
-                                }
-                                xCoord -= run;
-                                yCoord -= rise; // increment the x and y values with the rise and run values, decreasing
-                            }
-                            if (winner) { // if there is a winner
-                                riseTextField.setBackground(Color.lightGray);
-                                riseTextField.setFocusable(false);
-                                runTextField.setBackground(Color.lightGray);
-                                runTextField.setFocusable(false);
-                                yIntTextField.setBackground(Color.lightGray);
-                                yIntTextField.setFocusable(false);
-                                turnJLabel.setVisible(true);
-                                resetButton.setVisible(true);
-                                try {
-                                    boolean startCounter = false;
-                                    int numberOfGuesses = 0;
-                                    Scanner userScanner = new Scanner(userFile);
-                                    while (userScanner.hasNextLine()) { // count the number of guesses by reading the userHistory text file and display it when you win the game
-                                        String data = userScanner.nextLine();
-                                        if (startCounter) {
-                                            numberOfGuesses++;
-                                        }
-                                        if (data.equals("User's Guesses:")) {
-                                            startCounter = true;
-                                        }
-                                    }
-                                    numberOfGuesses++;
-                                    turnJLabel.setText("<html>You Win!<br/>Guesses: " + numberOfGuesses + "<html/>");
-                                    userScanner.close();
-                                } catch (Exception e){}
-                                score.userWins();
-                            }
-                            else { // if there is not a repeating slope
-                                playerTurn++; //increment player turn
-                                equationLabel.setText("y = — x + o");
-                                botGuessShip(); // tell the computer to guess a slope
-                            }
-                        }
-                        else {
-                            riseTextField.setText("");
-                            runTextField.setText("");
-                            yIntTextField.setText("");
-                            errorLabel.setVisible(true);
-                            errorLabel.setFont(new Font("Verdana", Font.BOLD, 30));
-                            errorLabel.setText("Error, please try again");
-                        }
-                    }
-                    else { // if the slope has already been guessed
-                        errorLabel.setVisible(true);
-                        errorLabel.setFont(new Font("Verdana", Font.BOLD, 25));
-                        errorLabel.setText("You already guessed that");
-                    }
-                }
-            }
-            catch (Exception e) { // if there is any of the following errors (not proper notation, not numerical values, out of bounds of the game)
-                riseTextField.setText("");
-                runTextField.setText("");
-                yIntTextField.setText("");
-                errorLabel.setVisible(true);
-                errorLabel.setFont(new Font("Verdana", Font.BOLD, 30));
-                errorLabel.setText("Error, please try again");
-            }
-        }
-        if (difficulty == 3) { // if the difficulty is the inequality version
+        else { // if the difficulty is the inequality/slope version
             try {
                 errorLabel.setVisible(false);
                 boolean winner = false; // winner checks if there has been a winner after an input
@@ -997,6 +845,11 @@ public class gameFrame extends JFrame{ //extends JFrame so this class can just b
                                             runTextField.setFocusable(false);
                                             yIntTextField.setBackground(Color.lightGray);
                                             yIntTextField.setFocusable(false);
+                                            lessThanButton.setEnabled(false);
+                                            greaterThanButton.setEnabled(false);
+                                            equalButton.setEnabled(false);
+                                            lessThanEqualButton.setEnabled(false);
+                                            greaterThanEqualButton.setEnabled(false);
                                             
                                         }
                                         else if(coordinatePlaced == 2 ){ // if there is a winner set the boolean winner to true
@@ -1018,6 +871,11 @@ public class gameFrame extends JFrame{ //extends JFrame so this class can just b
                                             runTextField.setFocusable(false);
                                             yIntTextField.setBackground(Color.lightGray);
                                             yIntTextField.setFocusable(false);
+                                            lessThanButton.setEnabled(false);
+                                            greaterThanButton.setEnabled(false);
+                                            equalButton.setEnabled(false);
+                                            lessThanEqualButton.setEnabled(false);
+                                            greaterThanEqualButton.setEnabled(false);
                                             
                                         }
                                         else if(coordinatePlaced == 2){  // if there is a winner set the boolean winner to true
@@ -1051,7 +909,6 @@ public class gameFrame extends JFrame{ //extends JFrame so this class can just b
                                             startCounter = true;
                                         }
                                     }
-                                    numberOfGuesses++;
                                     turnJLabel.setText("<html>You Win!<br/>Guesses: " + numberOfGuesses + "<html/>");
                                     userScanner.close();
                                 } catch (Exception e){}
@@ -1092,224 +949,138 @@ public class gameFrame extends JFrame{ //extends JFrame so this class can just b
         java.util.Timer timer4 = new java.util.Timer();
         int middle = userBoard.length/2; // middle of the game (0, 0)
         y = -y; // y value will be inverted because of how the JButtons are arranged
-        if (playerTurn % 2 == 0) { // if it is the user's turn
-            if (!computerBoard[middle + x][middle + y].getText().equals("X")) { // if the guessed coordinate isnt already guessed
-                if (!computerBoard[middle + x][middle + y].getText().equals(""))  { // if there is a ship, mark a red X
-                    computerBoard[middle + x][middle + y].setForeground(Color.RED);
-                    computerBoard[middle + x][middle + y].setText("X");
-                    computerBoard[middle + x][middle + y].setFont(new Font("Verdana", Font.BOLD, 50));
-                }
-                else { // if there is no ship, mark a black X
-                    computerBoard[middle + x][middle + y].setForeground(Color.BLACK);
-                    computerBoard[middle + x][middle + y].setText("X");
-                    computerBoard[middle + x][middle + y].setFont(new Font("Verdana", Font.BOLD, 50));
-                }
-                //Counting the number of ships after every turn to determine if there is a sink and if you win
-                if (shipCheck1) counter3 = 0; // only reset the value if the ship has not already sunk
-                if (shipCheck2) counter2 = 0;
-                if (shipCheck3) counter1 = 0;
-                for (int i = 0 ; i < computerBoard.length; i++) {
-                    for (int j = 0; j < computerBoard.length; j++) {
-                        if (shipCheck1 && computerBoard[i][j].getText().equals("3")) counter3++; // count the number of each boat for the user
-                        if (shipCheck2 && computerBoard[i][j].getText().equals("4")) counter2++;
-                        if (shipCheck3 && computerBoard[i][j].getText().equals("5")) counter1++;
-                    }
-                }
-                if (counter1 == 0 || counter2 == 0 || counter3 == 0) {
-                    shipType.setVisible(true);
-                    shipType.setBounds(685, 650, 300, 50);
-                    shipType.setText("SINK!");
-                    if (counter1 == 0) { // if any boats sink, set them to 1 and don't reset their value to avoid saying sink after every turn
-                        shipCheck3 = false;
-                        counter1 = 1;
-                    }
-                    if (counter2 == 0) {
-                        shipCheck2 = false;
-                        counter2 = 1;
-                    }
-                    if (counter3 == 0) {
-                        shipCheck1 = false;
-                        counter3 = 1;
-                    }
-                    TimerTask task4 = new TimerTask() { // timer to show sink text and remove after 2 seconds
-                        @Override
-                        public void run() {
-                            shipType.setVisible(false);
-                            timer4.cancel();
-                        }
-                    };
-                    timer4.scheduleAtFixedRate(task4, 2000, 1000); // create a timer with a delay of 2 seconds that only runs once
-                }
-                if (!shipCheck1 && !shipCheck2 && !shipCheck3) { // if all ships are sunk, return 2 indicating a win
-                    return 2;
-                }
-                return 1; // if everything is valid and is not a win, return 1
+        JButton[][] currentBoard = playerTurn % 2 == 0 ? computerBoard : userBoard; // determine the board that is being played on
+        boolean[] shipCheck = playerTurn % 2 == 0 ? new boolean[]{shipCheck1, shipCheck2, shipCheck3} : new boolean[]{p2ShipCheck1, p2ShipCheck2, p2ShipCheck3};
+        int[] shipCounter = playerTurn % 2 == 0 ? new int[]{counter1, counter2, counter3} : new int[]{p2Counter1, p2Counter2, p2Counter3};
+        String[] shipNumbers = playerTurn % 2 == 0 ? new String[]{"3", "4", "5"} : new String[]{"0", "1", "2"};
+        if (!currentBoard[middle + x][middle + y].getText().equals("X")) { // if the guessed coordinate isnt already guessed
+            if (!currentBoard[middle + x][middle + y].getText().equals(""))  { // if there is a ship, mark a red X
+                currentBoard[middle + x][middle + y].setForeground(Color.RED);
+                currentBoard[middle + x][middle + y].setText("X");
+                currentBoard[middle + x][middle + y].setFont(new Font("Verdana", Font.BOLD, 50));
             }
-            else {
-                return 0; // if there is an error, if it has already been guessed (only for difficulty == 1), return 0
+            else { // if there is no ship, mark a black X
+                currentBoard[middle + x][middle + y].setForeground(Color.BLACK);
+                currentBoard[middle + x][middle + y].setText("X");
+                currentBoard[middle + x][middle + y].setFont(new Font("Verdana", Font.BOLD, 50));
             }
+            //Counting the number of ships after every turn to determine if there is a sink and if you win
+            if (shipCheck[0]) shipCounter[2] = 0; // only reset the value if the ship has not already sunk
+            if (shipCheck[1]) shipCounter[1] = 0;
+            if (shipCheck[2]) shipCounter[0] = 0;
+            for (int i = 0 ; i < currentBoard.length; i++) {
+                for (int j = 0; j < currentBoard.length; j++) {
+                    if (shipCheck[0] && currentBoard[i][j].getText().equals(shipNumbers[0])) shipCounter[2]++; // count the number of each boat for each player
+                    if (shipCheck[1] && currentBoard[i][j].getText().equals(shipNumbers[1])) shipCounter[1]++;
+                    if (shipCheck[2] && currentBoard[i][j].getText().equals(shipNumbers[2])) shipCounter[0]++;
+                }
+            }
+            if (shipCounter[0] == 0 || shipCounter[1] == 0 || shipCounter[2] == 0) {
+                shipType.setVisible(true);
+                shipType.setBounds(685, 650, 300, 50);
+                shipType.setText("SINK!");
+                if (shipCounter[0] == 0) { // if any boats sink, set them to 1 and don't reset their value to avoid saying sink after every turn
+                    shipCheck[2] = false;
+                    shipCounter[0] = 1;
+                }
+                if (shipCounter[1] == 0) {
+                    shipCheck[1] = false;
+                    shipCounter[1] = 1;
+                }
+                if (shipCounter[2] == 0) {
+                    shipCheck[0] = false;
+                    shipCounter[2] = 1;
+                }
+                TimerTask task4 = new TimerTask() { // timer to show sink text and remove after 2 seconds
+                    @Override
+                    public void run() {
+                        shipType.setVisible(false);
+                        timer4.cancel();
+                    }
+                };
+                timer4.scheduleAtFixedRate(task4, 2000, 1000); // create a timer with a delay of 2 seconds that only runs once
+            }
+            if (!shipCheck[0] && !shipCheck[1] && !shipCheck[2]) { // if all ships are sunk, return 2 indicating a win
+                return 2;
+            }
+            return 1; // if everything is valid and is not a win, return 1
         }
-        else { // if it is the computer's turn
-            if (!userBoard[middle + x][middle + y].getText().equals("X")) { // if the guessed coordinate isnt already guessed
-                if (!userBoard[middle + x][middle + y].getText().equals(""))  { // if there is a ship, mark a red X
-                    userBoard[middle + x][middle + y].setForeground(Color.RED);
-                    userBoard[middle + x][middle + y].setText("X");
-                    userBoard[middle + x][middle + y].setFont(new Font("Verdana", Font.BOLD, 50));
-                }
-                else { // if there is no ship, mark a black X
-                    userBoard[middle + x][middle + y].setForeground(Color.BLACK);
-                    userBoard[middle + x][middle + y].setText("X");
-                    userBoard[middle + x][middle + y].setFont(new Font("Verdana", Font.BOLD, 50));
-                }
-                //Counting the number of ships after every turn to determine if there is a sink and if you win
-                if (p2ShipCheck1) p2Counter3 = 0; // only reset the value if the ship has not already sunk
-                if (p2ShipCheck2) p2Counter2 = 0;
-                if (p2ShipCheck3) p2Counter1 = 0;
-                for (int i = 0 ; i < userBoard.length; i++) {
-                    for (int j = 0; j < userBoard.length; j++) {
-                        if (p2ShipCheck1 && userBoard[i][j].getText().equals("0")) p2Counter3++; // count the number of each boat for the computer
-                        if (p2ShipCheck2 && userBoard[i][j].getText().equals("2")) p2Counter2++;
-                        if (p2ShipCheck3 && userBoard[i][j].getText().equals("1")) p2Counter1++;
-                    }
-                }
-                if (p2Counter1 == 0 || p2Counter2 == 0 || p2Counter3 == 0) {
-                    shipType.setVisible(true);
-                    shipType.setBounds(685, 650, 300, 50);
-                    shipType.setText("SINK!");
-                    if (p2Counter1 == 0) { // if any  of the computer's boats sink, set them to 1 and don't reset their value to avoid saying sink after every turn
-                        p2ShipCheck3 = false;
-                        p2Counter1 = 1;
-                    }
-                    if (p2Counter2 == 0) {
-                        p2ShipCheck2 = false;
-                        p2Counter2 = 1;
-                    }
-                    if (p2Counter3 == 0) {
-                        p2ShipCheck1 = false;
-                        p2Counter3 = 1;
-                    }
-                    TimerTask task4 = new TimerTask() { // timer to show sink text and remove after 2 seconds
-                        @Override
-                        public void run() {
-                            shipType.setVisible(false);
-                            timer4.cancel();
-                        }
-                    };
-                    timer4.scheduleAtFixedRate(task4, 2000, 1000); // create a timer with a delay of 2 seconds that only runs once
-                }
-                if (!p2ShipCheck1 && !p2ShipCheck2 && !p2ShipCheck3) {
-                    return 2; // if all ships are sunk, return 2 indicating a win for the computer
-                }
-                return 1; // if everything is valid and is not a win, return 1
-            }
-            else {
-                return 0; // if there is an error, if it has already been guessed (only for difficulty == 1), return 0
-            }
+        else {
+            return 0; // if there is an error, if it has already been guessed (only for difficulty == 1), return 0
         }
     }
 
+    /**
+     * When the slope inputted is an inequality
+     * @return void
+     */
     public void guessInequality() {
-            riseTextField.setBackground(Color.lightGray);
-            riseTextField.setFocusable(false);
-            runTextField.setBackground(Color.lightGray);
-            runTextField.setFocusable(false);
-            yIntTextField.setBackground(Color.lightGray);
-            yIntTextField.setFocusable(false);
-            int middle = userBoard.length/2; // middle of the game (0, 0)
-            if (equationLabel.getText().equals("y < — x + o")) { // if the inequality is less than
-                for (int i = -5; i <= 5; i++) {
-                    int endPoint = (int)Math.floor((double)rise * (double)i / (double)run + (double)yInt); //solve for the y-values with the x-values throughout the board
-                    for (int j = -5; j < endPoint; j++) {
-                        try {
-                            if (playerTurn % 2 == 0) {
-                                computerBoard[middle + i][middle - j].setBackground(Color.PINK);// show the inequality on the boards by setting the color to pink temporarily
-                            }
-                            else {
-                                inequalityCheck[middle + i][middle - j].setOpaque(true);
-                            }
-                        } catch (ArrayIndexOutOfBoundsException e){}
-                    }
-                }
-            }
-            else if (equationLabel.getText().equals("y > — x + o")) { // if the inequality is greater than
-                for (int i = -5; i <= 5; i++) {
-                    int endPoint = (int)Math.floor((double)rise * (double)i / (double)run + (double)yInt); //solve for the y-values with the x-values throughout the board
-                    for (int j = 5; j > endPoint; j--) {
-                        try {
-                            if (playerTurn % 2 == 0) {
-                                computerBoard[middle + i][middle - j].setBackground(Color.PINK);// show the inequality on the boards by setting the color to pink temporarily
-                            }
-                            else {
-                                inequalityCheck[middle + i][middle - j].setOpaque(true);
-                            }
-                        } catch (ArrayIndexOutOfBoundsException e){}
-                    }
-                }
-            }
-            else if (equationLabel.getText().equals("y ≤ — x + o")) { // if the inequality is less than equal to 
-                for (int i = -5; i <= 5; i++) {
-                    int endPoint = (int)Math.floor((double)rise * (double)i / (double)run + (double)yInt); //solve for the y-values with the x-values throughout the board
-                    for (int j = -5; j <= endPoint; j++) {
-                        try {
-                            if (playerTurn % 2 == 0) {
-                                computerBoard[middle + i][middle - j].setBackground(Color.PINK);// show the inequality on the boards by setting the color to pink temporarily
-                            }
-                            else {
-                                inequalityCheck[middle + i][middle - j].setOpaque(true);
-                            }
-                        } catch (ArrayIndexOutOfBoundsException e){}
-                    }
-                }
-            }
-            else if (equationLabel.getText().equals("y ≥ — x + o")) { // if the inequality is greater than equal to
-                for (int i = -5; i <= 5; i++) {
-                    int endPoint = (int)Math.floor((double)rise * (double)i / (double)run + (double)yInt); //solve for the y-values with the x-values throughout the board
-                    for (int j = 5; j >= endPoint; j--) {
-                        try {
-                            if (playerTurn % 2 == 0) {
-                                computerBoard[middle + i][middle - j].setBackground(Color.PINK); // show the inequality on the boards by setting the color to pink temporarily
-                            }
-                            else {
-                                inequalityCheck[middle + i][middle - j].setOpaque(true);
-                            }
-                        } catch (ArrayIndexOutOfBoundsException e){}
-                    }
-                    
-                }
-            }
+        riseTextField.setBackground(Color.lightGray);
+        riseTextField.setFocusable(false);
+        runTextField.setBackground(Color.lightGray);
+        runTextField.setFocusable(false);
+        yIntTextField.setBackground(Color.lightGray);
+        yIntTextField.setFocusable(false);
+        int middle = userBoard.length/2; // middle of the game (0, 0)
+        boolean lessThan = false, greaterThan = false, lessThanEqual = false;
+        switch(equationLabel.getText()) {
+            case "y < — x + o":
+                lessThan = true;
+                break;
+            case "y > — x + o":
+                greaterThan = true;
+                break;
+            case "y ≤ — x + o":
+                lessThanEqual = true;
+                break;
+        }
 
-            int computerShipCount = 0, userShipCount = 0;
-            for (int i = 0; i < userBoard.length; i++) { //count how many ships fall under the inequality inputted
-                for (int j = 0; j < userBoard.length; j++) {
-                    if ((userBoard[i][j].getText().equals("0") || userBoard[i][j].getText().equals("1") || userBoard[i][j].getText().equals("2")) && inequalityCheck[i][j].isOpaque()) {
-                        computerShipCount++;
+
+        for (int i = -5; i <= 5; i++) {
+            int endPoint = (int)Math.floor((double)rise * (double)i / (double)run + (double)yInt); //solve for the y-values with the x-values throughout the board
+            for (int j = ((lessThan || lessThanEqual) ? -5 : 5); lessThan ? j < endPoint : greaterThan ? j > endPoint : lessThanEqual ? j <= endPoint : j >= endPoint; j += (lessThan || lessThanEqual) ? 1 : -1) {// cycle through the conditions to determine what inequality is being used
+                try {
+                    if (playerTurn % 2 == 0) {
+                        computerBoard[middle + i][middle - j].setBackground(Color.PINK);// show the inequality on the boards by setting the color to pink temporarily
                     }
-                    if ((computerBoard[i][j].getText().equals("3") || computerBoard[i][j].getText().equals("4") || computerBoard[i][j].getText().equals("5")) && computerBoard[i][j].getBackground().equals(Color.PINK)) {
-                        userShipCount++;
+                    else {
+                        inequalityCheck[middle + i][middle - j].setOpaque(true);
                     }
+                } catch (ArrayIndexOutOfBoundsException e){}
+            }
+        }
+
+        int computerShipCount = 0, userShipCount = 0;
+        for (int i = 0; i < userBoard.length; i++) { //count how many ships fall under the inequality inputted
+            for (int j = 0; j < userBoard.length; j++) {
+                if ((userBoard[i][j].getText().equals("0") || userBoard[i][j].getText().equals("1") || userBoard[i][j].getText().equals("2")) && inequalityCheck[i][j].isOpaque()) {
+                    computerShipCount++;
+                }
+                if ((computerBoard[i][j].getText().equals("3") || computerBoard[i][j].getText().equals("4") || computerBoard[i][j].getText().equals("5")) && computerBoard[i][j].getBackground().equals(Color.PINK)) {
+                    userShipCount++;
                 }
             }
-            if (playerTurn % 2 == 0) { //add the inequality with the number of ships to the arraylists and the text files
-                userGuessedArea.setText(userGuessedArea.getText() + "\n" + (equationLabel.getText().replace("—", rise + "/" + run)).replace("o", String.valueOf(yInt)) + ",   new ships found: " + userShipCount);
-                try {
-                    userHistory.write((equationLabel.getText().replace("—", rise + "/" + run)).replace("o", String.valueOf(yInt)) + ",   new ships found: " + userShipCount + "\n");
-                    userHistory.flush();
-                } catch (Exception e){}
-            }
-            else {
-                computerGuessedArea.setText(computerGuessedArea.getText() + "\n" + (equationLabel.getText().replace("—", rise + "/" + run)).replace("o", String.valueOf(yInt)) + ",   new ships found: " + computerShipCount);
-                try {
-                    computerHistory.write((equationLabel.getText().replace("—", rise + "/" + run)).replace("o", String.valueOf(yInt)) + ",   new ships found: " + userShipCount + "\n");
-                    computerHistory.flush();
-                } catch (Exception e){}
-            }
+        }
+
+        JTextArea currentTextArea = playerTurn % 2 == 0 ? userGuessedArea : computerGuessedArea;
+        FileWriter currentFile = playerTurn % 2 == 0 ? userHistory : computerHistory;
+        int currentShipCount = playerTurn % 2 == 0 ? userShipCount : computerShipCount;
+
+        //add the inequality with the number of ships to the arraylists and the text files
+        currentTextArea.setText(currentTextArea.getText() + "\n" + (equationLabel.getText().replace("—", rise + "/" + run)).replace("o", String.valueOf(yInt)) + ",   new ships found: " + currentShipCount);
+        try {
+            currentFile.write((equationLabel.getText().replace("—", rise + "/" + run)).replace("o", String.valueOf(yInt)) + ",   new ships found: " + currentShipCount + "\n");
+            currentFile.flush();
+            currentFile.close();
+        } catch (Exception e){}
     }
+
+
     /**
      * the computer selects random spots to guess on the user's ships
      * @return void
      */
     public void botGuessShip() { // the computer's turn
-        
     java.util.Timer timer3 = new java.util.Timer();
         TimerTask task3 = new TimerTask() { // starts a timer to immatate the time a person would take 
             int count = 0;
@@ -1339,18 +1110,21 @@ public class gameFrame extends JFrame{ //extends JFrame so this class can just b
                     runTextField.setText(String.valueOf(run));
                     yIntTextField.setText(String.valueOf(yInt));
                     player computer = new player(coordinateField, yIntTextField, riseTextField, runTextField);
+
                     if (difficulty == 1) { // if difficulty is coordinate version
                         int coordinates[] = computer.level1Values();
                         int xCoord = coordinates[0];
                         int yCoord = coordinates[1];
                         coordinateField.setText("(" + xCoord + ", " + yCoord + ")");
                         int coordinatePlaced = guessSpot(xCoord, yCoord);
-                        if (coordinatePlaced == 1)  { // if the coordiate is valid increment the counter
+                        if (coordinatePlaced > 0) {
                             computerGuessedArea.setText(computerGuessedArea.getText() + "\n(" + xCoord + ", " + yCoord + ")");
                             try {
                                 computerHistory.write("(" + xCoord + ", " + yCoord + ")\n");
                                 computerHistory.flush();
                             } catch (Exception e){}
+                        }
+                        if (coordinatePlaced == 1)  { // if the coordiate is valid increment the counter
                             count++; 
                         }
                         else if(coordinatePlaced == 2){  // if the computer wins the game
@@ -1379,104 +1153,20 @@ public class gameFrame extends JFrame{ //extends JFrame so this class can just b
                             timer3.cancel(); // stop the timer
                         }
                     }
-
-                    if (difficulty == 2) { // if difficulty is slope version
-                        boolean winner = false;
-                        int slopeValues[] = computer.level2Values();
-                        rise = slopeValues[0];
-                        run = slopeValues[1];
-                        yInt = slopeValues[2];
-                        int xCoord = 0;
-                        int yCoord = yInt; //set the beginning values of the x and y coordinates
-
-                        if (!computerGuesses.contains("y = " + rise + "/" + run + " x + " + yInt)) {
-                            boolean occurance = false;
-                            for (int i = -5; i <= 5; i++) {
-                                int endPoint = (int)Math.floor((double)rise * (double)i / (double)run + (double)yInt); //solve for the y-values with the x-values throughout the board
-                                if (endPoint <= 5 && endPoint >= -5) {
-                                    occurance = true;
-                                    break;
+                    else { // if difficulty is inequality/slope version
+                        if (difficulty == 3) {
+                            if (equationTurn % 2 == 0) { // this cycles through the different equations so the robot will userBoard an inequality first, then an equation and the vice versa
+                                int chooseEquation = 2;
+                                while (chooseEquation == 2) {
+                                    chooseEquation = (int)Math.floor(Math.random()*(5));
                                 }
+                                equationLabel.setText(equations[chooseEquation]);
+                                equationTurn++;
                             }
-                            if (occurance) { // checks if the equation inputted actually occurs on the board
-                                computerGuesses.add("y = " + rise + "/" + run + " x + " + yInt );
-                                try {
-                                    computerHistory.write("y = " + rise + "/" + run + " x + " + yInt+ "\n");
-                                    computerHistory.flush();
-                                } catch (Exception e){}
-                                riseTextField.setText(String.valueOf(rise)); // display the values that the computer is guessing on the text feilds, so the user knows what the computer guessed
-                                runTextField.setText(String.valueOf(run));
-                                yIntTextField.setText(String.valueOf(yInt));
-                                if (equationLabel.getText().equals("y = — x + o")) {
-                                    xCoord = 0;
-                                    yCoord = yInt; //set the beginning values of the x and y coordinates
-                                    while (xCoord <= userBoard.length/2  && xCoord >= -userBoard.length/2) {
-                                        if (yCoord <= userBoard.length/2 && yCoord >= -userBoard.length/2) {
-                                            int coordinatePlaced = guessSpot(xCoord, yCoord); //set a variable temporarily to check if it successfully places the coordinate and if there is a win
-                                            if(coordinatePlaced == 2){ // if there is a winner, set winner to true
-                                                winner = true;
-                                            }
-                                        }
-                                        xCoord += run;
-                                        yCoord += rise;
-                                    }
-                                    xCoord = 0;
-                                    yCoord = yInt; //set the beginning values of the x and y coordinates
-                                    while (xCoord <= userBoard.length/2 && xCoord >= -userBoard.length/2) {
-                                        if (yCoord <= userBoard.length/2 && yCoord >= -userBoard.length/2) {
-                                            int coordinatePlaced = guessSpot(xCoord, yCoord); //set a variable temporarily to check if it successfully places the coordinate and if there is a win
-                                            if(coordinatePlaced == 2){ // if there is a winner, set winner to true
-                                                winner = true;
-                                            }
-                                        }
-                                        xCoord -= run;
-                                        yCoord -= rise;
-                                    }
-                                }
-                                else guessInequality();
-                                if (winner) {
-                                    turnJLabel.setVisible(true);
-                                    resetButton.setVisible(true);
-                                    try {
-                                        boolean startCounter = false;
-                                        int numberOfGuesses = 0;
-                                        Scanner computerScanner = new Scanner(computerFile);
-                                        while (computerScanner.hasNextLine()) { // count the number of guesses by reading the computerHistory text file and display it when the computer wins the game
-                                            String data = computerScanner.nextLine();
-                                            if (startCounter) {
-                                                numberOfGuesses++;
-                                            }
-                                            if (data.equals("Computer's Guesses:")) {
-                                                startCounter = true;
-                                            }
-                                        }
-                                        numberOfGuesses++;
-                                        turnJLabel.setText("<html>Computer Wins!<br/>Guesses: " + numberOfGuesses + "<html/>");
-                                        computerScanner.close();
-                                    } catch (Exception e){}
-                                    score.computerWins();
-                                    timer3.cancel(); //if there is a winner stop the timer prevent the game from continuing
-                                }
-                                else { // if there is no error, increment counter
-                                    computerGuessedArea.setText(computerGuessedArea.getText() + "\n" + (equationLabel.getText().replace("—", rise + "/" + run)).replace("o", String.valueOf(yInt)));
-                                    count++; 
-                                }
+                            else {
+                                equationLabel.setText(equations[2]);
+                                equationTurn++;
                             }
-                        }
-                    }
-                    if (difficulty == 3) { // if difficulty is inequality version
-                        
-                        if (equationTurn % 2 == 0) { // this cycles through the different equations so the robot will userBoard an inequality first, then an equation and the vice versa
-                            int chooseEquation = 2;
-                            while (chooseEquation == 2) {
-                                chooseEquation = (int)Math.floor(Math.random()*(5));
-                            }
-                            equationLabel.setText(equations[chooseEquation]);
-                            equationTurn++;
-                        }
-                        else {
-                            equationLabel.setText(equations[2]);
-                            equationTurn++;
                         }
                         boolean winner = false;
                         int slopeValues[] = computer.level2Values();
@@ -1549,7 +1239,6 @@ public class gameFrame extends JFrame{ //extends JFrame so this class can just b
                                                 startCounter = true;
                                             }
                                         }
-                                        numberOfGuesses++;
                                         turnJLabel.setText("<html>Computer Wins!<br/>Guesses: " + numberOfGuesses + "<html/>");
                                         computerScanner.close();
                                     } catch (Exception e){}
@@ -1573,24 +1262,12 @@ public class gameFrame extends JFrame{ //extends JFrame so this class can just b
                     }
                     playerTurn++; // increment player turn
                     turnJLabel.setText("Your Turn");
-                    repaint();
                     if (difficulty == 1) { // if the difficulty is the coordinate version
                         coordinateField.setText(""); // set the text fields need to focusable
                         coordinateField.setBackground(Color.WHITE);
                         coordinateField.setFocusable(true);
                     }
-                    if (difficulty == 2) { // if the difficulty is the slope version
-                        riseTextField.setText(""); // set the text fields need to focusable
-                        runTextField.setText("");
-                        yIntTextField.setText("");
-                        riseTextField.setBackground(Color.WHITE);
-                        riseTextField.setFocusable(true);
-                        runTextField.setBackground(Color.WHITE);
-                        runTextField.setFocusable(true);
-                        yIntTextField.setBackground(Color.WHITE);
-                        yIntTextField.setFocusable(true);
-                    }
-                    if (difficulty == 3) {
+                    else {
                         equationLabel.setText("y = — x + o");
                         riseTextField.setText(""); // set the text fields need to focusable
                         runTextField.setText("");
@@ -1601,11 +1278,13 @@ public class gameFrame extends JFrame{ //extends JFrame so this class can just b
                         runTextField.setFocusable(true);
                         yIntTextField.setBackground(Color.WHITE);
                         yIntTextField.setFocusable(true);
-                        lessThanButton.setEnabled(true);
-                        greaterThanButton.setEnabled(true);
-                        equalButton.setEnabled(true);
-                        lessThanEqualButton.setEnabled(true);
-                        greaterThanEqualButton.setEnabled(true);
+                        if (difficulty == 3) { //when difficulty is 3, inequality version
+                            lessThanButton.setEnabled(true);
+                            greaterThanButton.setEnabled(true);
+                            equalButton.setEnabled(true);
+                            lessThanEqualButton.setEnabled(true);
+                            greaterThanEqualButton.setEnabled(true);
+                        }
                     }
                     timer3.cancel();
                 }
