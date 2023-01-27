@@ -1,3 +1,8 @@
+/**
+ * @author duamanan
+ * @author GeldelaMohit
+ */
+
 import javax.swing.JButton;
 
 public class Ship extends ShipLength{
