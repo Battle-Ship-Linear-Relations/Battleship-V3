@@ -1,3 +1,8 @@
+/**
+ * @author duamanan
+ * @author GeldelaMohit
+ */
+
 import java.awt.*;
 
 interface shipClass {
