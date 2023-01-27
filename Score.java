@@ -1,8 +1,14 @@
+/**
+ * @author duamanan
+ * @author GeldelaMohit
+ */
+
 import javax.swing.*;
 
 //create score object
 public class Score {
 
+    //instance variables
     private JLabel scoresLabel;
 	int userScore = 0;
 	int computerScore = 0;
@@ -18,7 +24,8 @@ public class Score {
 
     /** 
     * When the user wins, update the score label
-    * 
+    *
+    * @return void 
     */
     public void userWins() {
         userScore++; // increase the user's score
@@ -28,6 +35,7 @@ public class Score {
     /** 
     * When the computer wins, update the score label
     * 
+    * @return void
     */
     public void computerWins() {
         computerScore++; //increase the computer's score
