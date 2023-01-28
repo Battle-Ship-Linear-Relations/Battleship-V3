@@ -330,35 +330,36 @@ public class gameFrame extends JFrame{ //extends JFrame so this class can just b
                 for (int i = 0; i < userBoard.length; i ++) { //initializes both set of buttons (boards for the game)
                     for (int j = 0; j < userBoard[0].length; j++) {
                         
-                        inequalityCheck[i][j] = new JLabel(); // 2D array of Jlabels used with inequalities function
+                        inequalityCheck[i][j] = new JLabel(""); // 2D array of Jlabels used with inequalities function
                         inequalityCheck[i][j].setBounds(i * 46 + 50, j * 46 + 125, 46, 46); // set the location and size of the labels
                         inequalityCheck[i][j].setFocusable(false);
                         inequalityCheck[i][j].setVisible(true);
                         inequalityCheck[i][j].setFont(new Font("Verdana", Font.BOLD, 0));      
                         inequalityCheck[i][j].setBorder(BorderFactory.createLineBorder(Color.BLACK, 0)); //remove the outlines of the labels      
                         inequalityCheck[i][j].setBackground(Color.PINK); //the background is pink when an inequality is revealed
-                        inequalityCheck[i][j].setText("");
                         inequalityCheck[i][j].setOpaque(false);
                         add(inequalityCheck[i][j]); //add the inequality check labels to the game
 
-                        userBoard[i][j] = new JButton(); // userBoard if the array of buttons the user will be playing on
+                        userBoard[i][j] = new JButton(""); // userBoard if the array of buttons the user will be playing on
                         userBoard[i][j].setBounds(i * 46 + 50, j * 46 + 125, 46, 46); // set the location and size of the buttons
                         userBoard[i][j].setFocusable(false);
                         userBoard[i][j].setVisible(true);
                         userBoard[i][j].setFont(new Font("Verdana", Font.BOLD, 0));      
-                        userBoard[i][j].setBorder(BorderFactory.createLineBorder(Color.BLACK, 0)); //remove the outlines of the buttons           
+                        userBoard[i][j].setBorder(BorderFactory.createLineBorder(Color.BLACK, 0)); //remove the outlines of the buttons  
+                        userBoard[i][j].setHorizontalAlignment(SwingConstants.CENTER);       
+                        userBoard[i][j].setVerticalAlignment(SwingConstants.CENTER);    
                         userBoard[i][j].setBackground(Color.lightGray);// initialize what happens when the button is pressed
-                        userBoard[i][j].setText("");
                         add(userBoard[i][j]);  //add the user's buttons to the game 
 
-                        computerBoard[i][j] = new JButton(); //computerBoard is the array of buttons the comupter will be playing on
+                        computerBoard[i][j] = new JButton(""); //computerBoard is the array of buttons the comupter will be playing on
                         computerBoard[i][j].setBounds(i * 46 + 1000, j * 46 + 125, 46, 46); // set the location and size of the buttons
                         computerBoard[i][j].setFocusable(false);
                         computerBoard[i][j].setVisible(true);
                         computerBoard[i][j].setFont(new Font("Verdana", Font.BOLD, 0));               
                         computerBoard[i][j].setBackground(Color.lightGray);
-                        computerBoard[i][j].setText("");
                         computerBoard[i][j].setBorder(BorderFactory.createLineBorder(Color.BLACK, 0)); //remove the outlines of the buttons
+                        computerBoard[i][j].setHorizontalAlignment(SwingConstants.CENTER);       
+                        computerBoard[i][j].setVerticalAlignment(SwingConstants.CENTER);
                         add(computerBoard[i][j]);  //add the computer's buttons to the game 
                     }
                 }
@@ -415,6 +416,7 @@ public class gameFrame extends JFrame{ //extends JFrame so this class can just b
             }
         });
         add(okButton);
+        repaint();
     }
 
 
@@ -754,7 +756,7 @@ public class gameFrame extends JFrame{ //extends JFrame so this class can just b
                     if (coordinatePlaced == 1) { // if the coordinate is valid 
                         coordinateField.setBackground(Color.lightGray);
                         coordinateField.setFocusable(false);
-                        userGuessedArea.setText(userGuessedArea.getText() + "\n(" + xCoord + ", " + yCoord + ")");
+                        userGuessedArea.setText(!userGuessedArea.getText().equals("") ? userGuessedArea.getText() + "\n" : "" + "(" + xCoord + ", " + yCoord + ")");
                         try {
                             userHistory.write("(" + xCoord + ", " + yCoord + ")\n");
                             userHistory.flush();
@@ -828,9 +830,9 @@ public class gameFrame extends JFrame{ //extends JFrame so this class can just b
                             userGuesses.add((equationLabel.getText().replace("—", rise + "/" + run)).replace("o", String.valueOf(yInt)));
                             
                             if (equationLabel.getText().equals("y = — x + o")) {
-                                userGuessedArea.setText(userGuessedArea.getText() + "\n" + (equationLabel.getText().replace("—", rise + "/" + run)).replace("o", String.valueOf(yInt)));
+                                userGuessedArea.setText(!userGuessedArea.getText().equals("") ? userGuessedArea.getText() + "\n" : "" + ((equationLabel.getText().replace("—", "(" + rise + "/" + run + ")")).replace("o", yInt != 0 ? String.valueOf(Math.abs(yInt)) : "")).replace("+",(yInt < 0 ? "-": yInt == 0 ? "" : "+")));
                                 try {
-                                    userHistory.write((equationLabel.getText().replace("—", rise + "/" + run)).replace("o", String.valueOf(yInt))+ "\n");
+                                    userHistory.write(((equationLabel.getText().replace("—", "(" + rise + "/" + run + ")")).replace("o", yInt != 0 ? String.valueOf(Math.abs(yInt)) : "")).replace("+",(yInt < 0 ? "-": yInt == 0 ? "" : "+")) + "\n");
                                     userHistory.flush();
                                 } catch (Exception e){}
                                 xCoord = 0;
@@ -953,16 +955,16 @@ public class gameFrame extends JFrame{ //extends JFrame so this class can just b
         boolean[] shipCheck = playerTurn % 2 == 0 ? new boolean[]{shipCheck1, shipCheck2, shipCheck3} : new boolean[]{p2ShipCheck1, p2ShipCheck2, p2ShipCheck3};
         int[] shipCounter = playerTurn % 2 == 0 ? new int[]{counter1, counter2, counter3} : new int[]{p2Counter1, p2Counter2, p2Counter3};
         String[] shipNumbers = playerTurn % 2 == 0 ? new String[]{"3", "4", "5"} : new String[]{"0", "1", "2"};
-        if (!currentBoard[middle + x][middle + y].getText().equals("X")) { // if the guessed coordinate isnt already guessed
+        if (!currentBoard[middle + x][middle + y].getText().equals("•")) { // if the guessed coordinate isnt already guessed
             if (!currentBoard[middle + x][middle + y].getText().equals(""))  { // if there is a ship, mark a red X
                 currentBoard[middle + x][middle + y].setForeground(Color.RED);
-                currentBoard[middle + x][middle + y].setText("X");
-                currentBoard[middle + x][middle + y].setFont(new Font("Verdana", Font.BOLD, 50));
+                currentBoard[middle + x][middle + y].setText("•");
+                currentBoard[middle + x][middle + y].setFont(new Font("Arial", Font.BOLD, 90));
             }
             else { // if there is no ship, mark a black X
                 currentBoard[middle + x][middle + y].setForeground(Color.BLACK);
-                currentBoard[middle + x][middle + y].setText("X");
-                currentBoard[middle + x][middle + y].setFont(new Font("Verdana", Font.BOLD, 50));
+                currentBoard[middle + x][middle + y].setText("•");
+                currentBoard[middle + x][middle + y].setFont(new Font("Arial", Font.BOLD, 90));
             }
             //Counting the number of ships after every turn to determine if there is a sink and if you win
             if (shipCheck[0]) shipCounter[2] = 0; // only reset the value if the ship has not already sunk
@@ -1067,9 +1069,9 @@ public class gameFrame extends JFrame{ //extends JFrame so this class can just b
         int currentShipCount = playerTurn % 2 == 0 ? userShipCount : computerShipCount;
 
         //add the inequality with the number of ships to the arraylists and the text files
-        currentTextArea.setText(currentTextArea.getText() + "\n" + (equationLabel.getText().replace("—", rise + "/" + run)).replace("o", String.valueOf(yInt)) + ",   new ships found: " + currentShipCount);
+        currentTextArea.setText(currentTextArea.getText() + "\n" + ((equationLabel.getText().replace("—", "(" + rise + "/" + run + ")")).replace("o", yInt != 0 ? String.valueOf(Math.abs(yInt)) : "")).replace("+",(yInt < 0 ? "-": yInt == 0 ? "" : "+")) + ",   new ships found: " + currentShipCount);
         try {
-            currentFile.write((equationLabel.getText().replace("—", rise + "/" + run)).replace("o", String.valueOf(yInt)) + ",   new ships found: " + currentShipCount + "\n");
+            currentFile.write(((equationLabel.getText().replace("—", "(" + rise + "/" + run + ")")).replace("o", yInt != 0 ? String.valueOf(Math.abs(yInt)) : "")).replace("+",(yInt < 0 ? "-": yInt == 0 ? "" : "+")) + ",   new ships found: " + currentShipCount + "\n");
             currentFile.flush();
             currentFile.close();
         } catch (Exception e){}
@@ -1118,7 +1120,7 @@ public class gameFrame extends JFrame{ //extends JFrame so this class can just b
                         coordinateField.setText("(" + xCoord + ", " + yCoord + ")");
                         int coordinatePlaced = guessSpot(xCoord, yCoord);
                         if (coordinatePlaced > 0) {
-                            computerGuessedArea.setText(computerGuessedArea.getText() + "\n(" + xCoord + ", " + yCoord + ")");
+                            computerGuessedArea.setText(!computerGuessedArea.getText().equals("") ? computerGuessedArea.getText() + "\n" : ""  + "(" + xCoord + ", " + yCoord + ")");
                             try {
                                 computerHistory.write("(" + xCoord + ", " + yCoord + ")\n");
                                 computerHistory.flush();
@@ -1175,7 +1177,7 @@ public class gameFrame extends JFrame{ //extends JFrame so this class can just b
                         yInt = slopeValues[2];
                         int xCoord = 0;
                         int yCoord = yInt; //set the beginning values of the x and y coordinates
-                        if (!computerGuesses.contains((equationLabel.getText().replace("—", rise + "/" + run)).replace("o", String.valueOf(yInt)))) {
+                        if (!computerGuesses.contains(((equationLabel.getText().replace("—", "(" + rise + "/" + run + ")")).replace("o", yInt != 0 ? String.valueOf(Math.abs(yInt)) : "")).replace("+",(yInt < 0 ? "-": yInt == 0 ? "" : "+")))) {
                             boolean occurance = false;
                             for (int i = -5; i <= 5; i++) {
                                 int endPoint = (int)Math.floor((double)rise * (double)i / (double)run + (double)yInt); //solve for the y-values with the x-values throughout the board
@@ -1186,15 +1188,15 @@ public class gameFrame extends JFrame{ //extends JFrame so this class can just b
                                 }
                             }
                             if (occurance) { // checks if the equation inputted actually occurs on the board
-                                computerGuesses.add((equationLabel.getText().replace("—", rise + "/" + run)).replace("o", String.valueOf(yInt)));
+                                computerGuesses.add(((equationLabel.getText().replace("—", "(" + rise + "/" + run + ")")).replace("o", yInt != 0 ? String.valueOf(Math.abs(yInt)) : "")).replace("+",(yInt < 0 ? "-": yInt == 0 ? "" : "+")));
                             
                                 riseTextField.setText(String.valueOf(rise)); // display the values that the computer is guessing on the text feilds, so the user knows what the computer guessed
                                 runTextField.setText(String.valueOf(run));
                                 yIntTextField.setText(String.valueOf(yInt));
                                 if (equationLabel.getText().equals("y = — x + o")) {
-                                    computerGuessedArea.setText(computerGuessedArea.getText() + "\n" + (equationLabel.getText().replace("—", rise + "/" + run)).replace("o", String.valueOf(yInt)));
+                                    computerGuessedArea.setText(!computerGuessedArea.getText().equals("") ? computerGuessedArea.getText() + "\n" : "" + ((equationLabel.getText().replace("—", "(" + rise + "/" + run + ")")).replace("o", yInt != 0 ? String.valueOf(Math.abs(yInt)) : "")).replace("+",(yInt < 0 ? "-": yInt == 0 ? "" : "+")));
                                     try {
-                                        computerHistory.write((equationLabel.getText().replace("—", rise + "/" + run)).replace("o", String.valueOf(yInt)) + "\n");
+                                        computerHistory.write(((equationLabel.getText().replace("—", "(" + rise + "/" + run + ")")).replace("o", yInt != 0 ? String.valueOf(Math.abs(yInt)) : "")).replace("+",(yInt < 0 ? "-": yInt == 0 ? "" : "+")) + "\n");
                                         computerHistory.flush();
                                     } catch (Exception e){}
                                     xCoord = 0;
